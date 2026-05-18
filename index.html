@@ -39,14 +39,12 @@
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* Smooth progress bar */
-        .progress-bar-fill { transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); }
+        .progress-bar-fill { transition: width 0.3s ease; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body class="antialiased selection:bg-brandWait selection:text-white">
 
-<!-- TOAST NOTIFICATION -->
 <div id="toast" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-[200] flex items-center gap-3 px-6 py-3 rounded-full font-bold text-sm shadow-xl transition-all duration-300 -translate-y-20 opacity-0 max-w-[90%] whitespace-nowrap pointer-events-none bg-textMain text-white">
     <i id="toastIcon" class="ph-fill ph-check-circle text-xl"></i>
     <span id="toastMsg">Notification</span>
@@ -54,11 +52,8 @@
 
 <div class="app-container md:border-x md:border-appBorder shadow-2xl bg-appBg">
 
-    <!-- ==========================================
-         SCREEN 1: LOGIN SCREEN
-    ========================================== -->
+    <!-- LOGIN SCREEN -->
     <div id="loginScreen" class="min-h-screen flex flex-col justify-center px-6 py-12 relative overflow-hidden z-10 fade-in">
-        <!-- Decor blobs -->
         <div class="absolute top-[-10%] left-[-10%] w-64 h-64 bg-brandWait/10 rounded-full blur-3xl -z-10"></div>
         <div class="absolute bottom-[-10%] right-[-10%] w-64 h-64 bg-brandDone/10 rounded-full blur-3xl -z-10"></div>
 
@@ -73,9 +68,7 @@
         <div class="bg-white p-6 rounded-[32px] shadow-[0_8px_30px_rgba(0,0,0,0.04)] border border-appBorder slide-up">
             <label class="text-[11px] font-bold text-textMuted tracking-wider mb-2 block uppercase" data-i18n="login_label">ENTER ID OR PHONE NUMBER</label>
             <div class="relative mb-6">
-                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <i class="ph-fill ph-identification-card text-xl text-textMuted"></i>
-                </div>
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"><i class="ph-fill ph-identification-card text-xl text-textMuted"></i></div>
                 <input type="text" id="loginInput" class="w-full bg-inputBg text-textMain border border-appBorder rounded-2xl py-4 pl-12 pr-4 font-bold placeholder:text-textMuted/50 focus:ring-2 focus:ring-brandWait/20 focus:border-brandWait transition-all outline-none" placeholder="e.g., NCC-042 or 9876543210" onkeypress="if(event.key === 'Enter') handleLogin()">
             </div>
             <button onclick="handleLogin()" id="btnLogin" class="w-full py-4 bg-brandWait text-white rounded-2xl font-extrabold text-base flex justify-center items-center gap-2 hover:opacity-90 transition-opacity shadow-lg shadow-brandWait/20">
@@ -90,35 +83,27 @@
         </div>
     </div>
 
-    <!-- ==========================================
-         SCREEN 2: MAIN DASHBOARD
-    ========================================== -->
+    <!-- MAIN DASHBOARD -->
     <div id="dashboardScreen" class="hidden min-h-screen pb-10 fade-in">
         
-        <!-- Header -->
         <div class="bg-white pt-10 pb-6 px-6 rounded-b-[40px] shadow-sm border-b border-appBorder sticky top-0 z-50">
             <div class="flex justify-between items-center mb-2">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-brandDone/10 text-brandDone rounded-full flex items-center justify-center font-bold text-lg" id="userInitial">R</div>
+                    <div class="w-10 h-10 bg-brandDone/10 text-brandDone rounded-full flex items-center justify-center font-bold text-lg" id="userInitial">P</div>
                     <div>
                         <p class="text-[10px] font-bold text-textMuted uppercase tracking-wider" data-i18n="dash_hello">Hello,</p>
                         <h2 class="text-lg font-extrabold text-textMain leading-tight" id="userNameDisplay">Patient Name</h2>
                     </div>
                 </div>
                 <div class="flex gap-2">
-                    <button onclick="toggleLanguage()" class="w-10 h-10 bg-inputBg rounded-full flex items-center justify-center text-textMuted border border-appBorder hover:bg-gray-100 transition-colors">
-                        <span class="font-bold text-sm">अ/A</span>
-                    </button>
-                    <button onclick="logout()" class="w-10 h-10 bg-red-50 text-red-500 rounded-full flex items-center justify-center border border-red-100 hover:bg-red-100 transition-colors">
-                        <i class="ph-bold ph-sign-out text-lg"></i>
-                    </button>
+                    <button onclick="toggleLanguage()" class="w-10 h-10 bg-inputBg rounded-full flex items-center justify-center text-textMuted border border-appBorder hover:bg-gray-100 transition-colors"><span class="font-bold text-sm">अ/A</span></button>
+                    <button onclick="logout()" class="w-10 h-10 bg-red-50 text-red-500 rounded-full flex items-center justify-center border border-red-100 hover:bg-red-100 transition-colors"><i class="ph-bold ph-sign-out text-lg"></i></button>
                 </div>
             </div>
         </div>
 
         <div class="px-5 pt-6 space-y-5">
             
-            <!-- Panic Banner (Hidden by default, shown if clinic is closed) -->
             <div id="clinicClosedBanner" class="hidden bg-red-50 border border-red-200 p-4 rounded-2xl flex gap-3 items-start slide-up">
                 <i class="ph-fill ph-warning-circle text-red-500 text-xl mt-0.5"></i>
                 <div>
@@ -147,8 +132,6 @@
                             <p class="text-2xl font-black text-brandWait" id="qYourToken">-</p>
                         </div>
                     </div>
-                    
-                    <!-- Progress Bar -->
                     <div class="w-full bg-gray-200 h-2 rounded-full overflow-hidden mb-2">
                         <div id="qProgressBar" class="h-full bg-brandWait progress-bar-fill rounded-full" style="width: 0%;"></div>
                     </div>
@@ -156,36 +139,30 @@
                 </div>
             </div>
 
-            <!-- MEDICINE TRACKER CARD (Interactive) -->
+            <!-- MEDICINE TRACKER CARD -->
             <div class="bg-white border border-appBorder rounded-[32px] p-5 shadow-[0_4px_20px_rgba(0,0,0,0.03)] slide-up" style="animation-delay: 0.2s;">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="font-extrabold text-textMain flex items-center gap-2"><i class="ph-fill ph-pill text-brandConsult text-xl"></i> <span data-i18n="med_title">Medicine Tracker</span></h3>
                     <span class="text-[10px] font-bold text-textMuted bg-inputBg px-2 py-1 rounded-lg border border-appBorder" id="rxDate">Latest</span>
                 </div>
-                
-                <div id="medicineList" class="space-y-3">
-                    <!-- Medicines will be injected here -->
-                </div>
+                <div id="medicineList" class="space-y-3"></div>
             </div>
 
-            <!-- CALL TO ACTION (Book/Contact) -->
+            <!-- CALL TO ACTION -->
             <div class="bg-gradient-to-br from-[#1E293B] to-[#0F172A] rounded-[32px] p-6 shadow-xl relative overflow-hidden slide-up" style="animation-delay: 0.3s;">
                 <div class="absolute right-[-10%] top-[-20%] w-32 h-32 bg-white/5 rounded-full blur-2xl"></div>
-                
                 <h3 class="font-extrabold text-white text-lg mb-1" data-i18n="call_title">Book New Appointment</h3>
                 <p class="text-sm text-gray-300 mb-4" data-i18n="call_sub">Dr. Pise (10 Yrs Exp.) • Naturopathy Clinic, Wardha</p>
-                
                 <div class="flex items-center gap-2 mb-5">
                     <i class="ph-fill ph-clock text-gray-400"></i>
                     <span class="text-xs font-semibold text-gray-300" data-i18n="call_time">Timing: 9 AM to 5 PM (Mon - Sat)</span>
                 </div>
-
                 <a href="tel:+918010140632" class="w-full py-4 bg-white text-textMain rounded-2xl font-extrabold text-sm flex justify-center items-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-transform">
                     <i class="ph-fill ph-phone-call text-brandWait text-xl"></i> <span data-i18n="call_btn">Call Now: +91 80101 40632</span>
                 </a>
             </div>
 
-            <!-- DOCUMENT VAULT (History & Upload) -->
+            <!-- DOCUMENT VAULT -->
             <div class="bg-white border border-appBorder rounded-[32px] p-5 shadow-[0_4px_20px_rgba(0,0,0,0.03)] slide-up" style="animation-delay: 0.4s;">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="font-extrabold text-textMain flex items-center gap-2"><i class="ph-fill ph-folder-notch text-brandDone text-xl"></i> <span data-i18n="vault_title">Document Vault</span></h3>
@@ -196,42 +173,53 @@
                     <button onclick="switchVaultTab('prescriptions')" id="tabRx" class="px-4 py-2 bg-inputBg text-textMuted rounded-full text-xs font-bold whitespace-nowrap border border-appBorder hover:text-textMain transition-colors" data-i18n="vault_tab_rx">Past Prescriptions</button>
                 </div>
 
-                <div id="vaultContent" class="space-y-3 min-h-[100px]">
-                    <!-- Documents will be injected here -->
-                </div>
+                <div id="vaultContent" class="space-y-3 min-h-[100px]"></div>
 
-                <!-- Upload Button -->
                 <div class="mt-4 pt-4 border-t border-appBorder">
-                    <label class="w-full py-3.5 bg-inputBg border border-dashed border-textMuted/40 text-textMain rounded-2xl font-bold text-sm flex justify-center items-center gap-2 hover:bg-gray-100 transition-colors cursor-pointer">
+                    <label class="w-full py-3.5 bg-inputBg border border-dashed border-brandWait/40 text-brandWait rounded-2xl font-bold text-sm flex justify-center items-center gap-2 hover:bg-brandWait/5 transition-colors cursor-pointer">
                         <i class="ph-bold ph-upload-simple text-lg"></i> <span data-i18n="vault_upload">Upload Report (PDF/Image)</span>
-                        <input type="file" class="hidden" accept="image/*,.pdf" onchange="handleFileUpload(event)">
+                        <input type="file" class="hidden" id="fileUploadInput" accept="image/*,.pdf" onchange="processAndUploadFile(event)">
                     </label>
                 </div>
             </div>
 
-            <!-- CREDITS FOOTER -->
             <div class="text-center pt-4 pb-8 slide-up" style="animation-delay: 0.5s;">
                 <a href="https://tusharnanwani80-rgb.github.io/seen-and-sold-check/" target="_blank" class="block group cursor-pointer">
                     <p class="text-[10px] font-bold tracking-widest text-textMuted/60 uppercase group-hover:text-brandWait transition-colors" data-i18n="footer_made">This app was made by</p>
                     <p class="text-xs font-extrabold text-textMuted mt-0.5 group-hover:text-textMain transition-colors">Seen and Sold Agency</p>
                 </a>
             </div>
-
         </div>
     </div>
 </div>
 
-<!-- Upload Progress Modal -->
+<!-- Upload Progress Modal (Godmode XHR) -->
 <div id="uploadModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[180] hidden flex flex-col justify-center items-center px-6">
     <div class="bg-white w-full max-w-[320px] rounded-3xl p-6 text-center transform scale-95 opacity-0 transition-all duration-300" id="uploadModalContent">
-        <div class="w-16 h-16 bg-inputBg rounded-full flex items-center justify-center mx-auto mb-4 border border-appBorder relative overflow-hidden">
-            <i class="ph-fill ph-file-arrow-up text-3xl text-brandWait relative z-10" id="uploadIcon"></i>
-            <div id="uploadSpinner" class="absolute inset-0 border-4 border-t-brandWait border-transparent rounded-full animate-spin hidden"></div>
+        <div id="uploadStatusUI">
+            <div class="w-16 h-16 bg-inputBg rounded-full flex items-center justify-center mx-auto mb-4 border border-appBorder relative overflow-hidden" id="uploadIconWrapper">
+                <i class="ph-fill ph-file-arrow-up text-3xl text-brandWait relative z-10" id="uploadIcon"></i>
+                <div id="uploadSpinner" class="absolute inset-0 border-4 border-t-brandWait border-transparent rounded-full animate-spin"></div>
+            </div>
+            <h3 class="text-lg font-bold text-textMain mb-1" id="uploadTitle" data-i18n="up_title">Uploading Document</h3>
+            <p class="text-xs text-textMuted font-medium mb-4" id="uploadFileName">report.pdf</p>
+            <div class="w-full bg-inputBg h-2 rounded-full overflow-hidden mb-2" id="progressBarWrapper">
+                <div id="uploadProgressBar" class="h-full bg-brandDone w-0"></div>
+            </div>
+            <p class="text-[10px] font-bold text-textMuted uppercase" id="uploadPercentage">0%</p>
         </div>
-        <h3 class="text-lg font-bold text-textMain mb-1" id="uploadTitle" data-i18n="up_title">Uploading Document</h3>
-        <p class="text-xs text-textMuted font-medium mb-4" id="uploadFileName">report.pdf</p>
-        <div class="w-full bg-inputBg h-2 rounded-full overflow-hidden">
-            <div id="uploadProgressBar" class="h-full bg-brandDone w-0 transition-all duration-300"></div>
+        
+        <!-- Retry Error State -->
+        <div id="uploadErrorUI" class="hidden">
+            <div class="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-red-200">
+                <i class="ph-fill ph-warning-circle text-3xl text-red-500"></i>
+            </div>
+            <h3 class="text-lg font-bold text-red-600 mb-1" data-i18n="up_error">Upload Failed</h3>
+            <p class="text-xs text-textMuted font-medium mb-6" id="uploadErrorMsg">Network disconnected.</p>
+            <div class="flex gap-2">
+                <button onclick="closeUploadModal()" class="flex-1 py-3 bg-inputBg text-textMain rounded-xl font-bold text-sm">Cancel</button>
+                <button onclick="retryUpload()" class="flex-1 py-3 bg-brandWait text-white rounded-xl font-bold text-sm">Retry</button>
+            </div>
         </div>
     </div>
 </div>
@@ -242,9 +230,6 @@
     // ==========================================
     const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw1OqkYJl2CikO7y5SJRE4k9n2k3kr7wMGTa9O_eVsAPE82wVL86QJhrogcxGe1Z9LZ/exec";
 
-    // ==========================================
-    // TRANSLATIONS (English <-> Hindi)
-    // ==========================================
     const i18n = {
         en: {
             login_welcome: "Welcome to Clinic", login_sub: "Naturopathy Care by Dr. Pise", login_label: "ENTER ID OR PHONE NUMBER", login_btn: "Access My Portal",
@@ -254,7 +239,7 @@
             med_title: "Medicine Tracker", med_empty: "No active medicines found.", med_warm: "Warm Water",
             call_title: "Book New Appointment", call_sub: "Dr. Pise (10 Yrs Exp.) • Naturopathy Clinic, Wardha", call_time: "Timing: 9 AM to 5 PM (Mon - Sat)", call_btn: "Call Now: +91 80101 40632",
             vault_title: "Document Vault", vault_tab_reports: "Lab Reports", vault_tab_rx: "Past Prescriptions", vault_upload: "Upload Report (PDF/Image)", vault_empty: "No documents found.", vault_download: "Download", vault_complaint: "Complaint:",
-            footer_made: "This app was made by", up_title: "Uploading Document"
+            footer_made: "This app was made by", up_title: "Uploading Document", up_error: "Upload Failed"
         },
         hi: {
             login_welcome: "क्लीनिक में आपका स्वागत है", login_sub: "डॉ. पिसे द्वारा प्राकृतिक चिकित्सा", login_label: "अपना आईडी या फोन नंबर दर्ज करें", login_btn: "लॉग इन करें",
@@ -264,7 +249,7 @@
             med_title: "दवाइयों का चार्ट", med_empty: "कोई सक्रिय दवा नहीं मिली।", med_warm: "गर्म पानी",
             call_title: "नया अपॉइंटमेंट बुक करें", call_sub: "डॉ. पिसे (10 वर्ष का अनुभव) • प्राकृतिक चिकित्सा, वर्धा", call_time: "समय: सुबह 9 से शाम 5 बजे तक", call_btn: "अभी कॉल करें: +91 80101 40632",
             vault_title: "दस्तावेज़ और रिपोर्ट", vault_tab_reports: "लैब रिपोर्ट", vault_tab_rx: "पुराने नुस्खे", vault_upload: "नई रिपोर्ट अपलोड करें", vault_empty: "कोई दस्तावेज़ नहीं मिला।", vault_download: "डाउनलोड", vault_complaint: "समस्या:",
-            footer_made: "यह ऐप इनके द्वारा बनाया गया है:", up_title: "डॉक्यूमेंट अपलोड हो रहा है"
+            footer_made: "यह ऐप इनके द्वारा बनाया गया है:", up_title: "डॉक्यूमेंट अपलोड हो रहा है", up_error: "अपलोड विफल"
         }
     };
 
@@ -275,52 +260,28 @@
     function toggleLanguage() {
         currentLang = currentLang === 'en' ? 'hi' : 'en';
         document.getElementById('langBtnText').innerText = currentLang === 'en' ? "हिंदी में देखें (Translate)" : "View in English";
-        
         const elements = document.querySelectorAll('[data-i18n]');
         elements.forEach(el => {
             const key = el.getAttribute('data-i18n');
             if (i18n[currentLang][key]) {
-                // Special case to keep icons inside headings/buttons untouched
-                if (key === 'call_btn') {
-                    el.innerHTML = `<i class="ph-fill ph-phone-call text-brandWait text-xl"></i> ${i18n[currentLang][key]}`;
-                } else if (key === 'queue_title') {
-                    el.innerHTML = `<i class="ph-fill ph-users-three text-brandWait text-xl"></i> ${i18n[currentLang][key]}`;
-                } else if (key === 'med_title') {
-                    el.innerHTML = `<i class="ph-fill ph-pill text-brandConsult text-xl"></i> ${i18n[currentLang][key]}`;
-                } else if (key === 'vault_title') {
-                    el.innerHTML = `<i class="ph-fill ph-folder-notch text-brandDone text-xl"></i> ${i18n[currentLang][key]}`;
-                } else if (key === 'vault_upload') {
-                    el.innerHTML = `<i class="ph-bold ph-upload-simple text-lg"></i> ${i18n[currentLang][key]}`;
-                } else {
-                    el.innerText = i18n[currentLang][key];
-                }
+                if (key === 'call_btn') el.innerHTML = `<i class="ph-fill ph-phone-call text-brandWait text-xl"></i> ${i18n[currentLang][key]}`;
+                else if (key === 'queue_title') el.innerHTML = `<i class="ph-fill ph-users-three text-brandWait text-xl"></i> ${i18n[currentLang][key]}`;
+                else if (key === 'med_title') el.innerHTML = `<i class="ph-fill ph-pill text-brandConsult text-xl"></i> ${i18n[currentLang][key]}`;
+                else if (key === 'vault_title') el.innerHTML = `<i class="ph-fill ph-folder-notch text-brandDone text-xl"></i> ${i18n[currentLang][key]}`;
+                else if (key === 'vault_upload') el.innerHTML = `<i class="ph-bold ph-upload-simple text-lg"></i> ${i18n[currentLang][key]}`;
+                else el.innerText = i18n[currentLang][key];
             }
         });
-        
-        // Re-render dynamic content to apply translations there too
-        if(currentPatientState && document.getElementById('dashboardScreen').classList.contains('hidden') === false) {
-            loadDashboardData(currentPatientState);
-        }
+        if(currentPatientState && !document.getElementById('dashboardScreen').classList.contains('hidden')) loadDashboardData(currentPatientState);
     }
-
-    // ==========================================
-    // LOGIC & UI FUNCTIONS
-    // ==========================================
 
     function showToast(message, type = 'success') {
         const toast = document.getElementById('toast');
         document.getElementById('toastMsg').innerText = message;
         document.getElementById('toastIcon').className = type === 'success' ? 'ph-fill ph-check-circle text-xl' : 'ph-fill ph-warning-circle text-xl text-red-300';
         toast.className = `fixed top-4 left-1/2 transform -translate-x-1/2 z-[200] flex items-center gap-3 px-6 py-3 rounded-full font-bold text-sm shadow-xl transition-all duration-300 max-w-[90%] whitespace-nowrap pointer-events-none bg-textMain text-white`;
-        
-        requestAnimationFrame(() => {
-            toast.classList.remove('-translate-y-20', 'opacity-0');
-            toast.classList.add('translate-y-0', 'opacity-100');
-        });
-        setTimeout(() => {
-            toast.classList.remove('translate-y-0', 'opacity-100');
-            toast.classList.add('-translate-y-20', 'opacity-0');
-        }, 3000);
+        requestAnimationFrame(() => { toast.classList.remove('-translate-y-20', 'opacity-0'); toast.classList.add('translate-y-0', 'opacity-100'); });
+        setTimeout(() => { toast.classList.remove('translate-y-0', 'opacity-100'); toast.classList.add('-translate-y-20', 'opacity-0'); }, 3000);
     }
 
     async function handleLogin() {
@@ -328,92 +289,56 @@
         const btn = document.getElementById('btnLogin');
         const ogBtnHtml = btn.innerHTML;
         
-        if(input.length < 5) {
-            showToast(currentLang === 'en' ? "Please enter valid ID or Phone" : "कृपया सही आईडी या फोन दर्ज करें", "error");
-            return;
-        }
-
+        if(input.length < 5) { showToast(currentLang === 'en' ? "Please enter valid ID or Phone" : "कृपया सही आईडी या फोन दर्ज करें", "error"); return; }
         btn.innerHTML = `<i class="ph ph-spinner-gap animate-spin text-xl"></i>`;
         
         try {
-            // 1. Search Patient
             let res = await fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: 'searchPatient', query: input }) });
             let data = await res.json();
             
             if(!data.success || data.data.length === 0) {
                 showToast(currentLang === 'en' ? "Patient not found. Check ID/Phone." : "मरीज़ नहीं मिला। आईडी/फ़ोन जांचें।", "error");
-                btn.innerHTML = ogBtnHtml;
-                return;
+                btn.innerHTML = ogBtnHtml; return;
             }
             const patient = data.data[0];
 
-            // 2. Fetch History (Prescriptions & Reports)
             res = await fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: 'getPatientHistory', patientId: patient.patientId }) });
             const historyData = await res.json();
 
-            // 3. Fetch Queue for Today
             const todayStr = new Date().toISOString().split('T')[0];
             res = await fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: 'getQueue', date: todayStr }) });
             const queueData = await res.json();
 
-            // 4. Fetch Wait Time Settings
-            res = await fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: 'getSettings' }) });
+            res = await fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: 'getSystemStatus' }) });
             const settingsData = await res.json();
             const avgWaitMins = (settingsData.success && settingsData.data.avgWaitTime) ? parseInt(settingsData.data.avgWaitTime, 10) : 15;
 
-            // Process Active Queue
-            let currentToken = 0;
-            let yourToken = 0;
-            let inQueue = false;
-
+            let currentToken = 0, yourToken = 0, inQueue = false;
             if (queueData.success && queueData.data.length > 0) {
                 const qList = queueData.data;
                 const activeItem = qList.find(q => q.status === 'In Consultation') || qList.find(q => q.status === 'Waiting');
                 currentToken = activeItem ? activeItem.tokenNo : qList[0].tokenNo;
-
                 const myItem = qList.find(q => q.patientId === patient.patientId && (q.status === 'Waiting' || q.status === 'Booked' || q.status === 'In Consultation'));
-                if (myItem) {
-                    yourToken = myItem.tokenNo;
-                    inQueue = true;
-                }
+                if (myItem) { yourToken = myItem.tokenNo; inQueue = true; }
             }
 
-            // Process Active Protocol (Latest Prescription)
-            let activeProtocol = [];
-            let reports = [];
-            let prescriptions = [];
-            
+            let activeProtocol = [], reports = [], prescriptions = [];
             if(historyData.success) {
                 prescriptions = historyData.data.prescriptions || [];
                 reports = historyData.data.reports || [];
-                if(prescriptions.length > 0) {
-                    activeProtocol = prescriptions[0].protocol || [];
-                }
+                if(prescriptions.length > 0) activeProtocol = prescriptions[0].protocol || [];
             }
 
-            // Construct unified patient state
             currentPatientState = {
-                patientId: patient.patientId,
-                name: patient.name,
-                phone: patient.phone,
-                queue: {
-                    inQueue: inQueue,
-                    currentToken: currentToken,
-                    yourToken: yourToken,
-                    avgWaitMins: avgWaitMins
-                },
-                activeProtocol: activeProtocol,
-                reports: reports,
-                prescriptions: prescriptions,
-                clinicClosed: false // Optional: backend implementation needed for real close status
+                patientId: patient.patientId, name: patient.name, phone: patient.phone,
+                queue: { inQueue: inQueue, currentToken: currentToken, yourToken: yourToken, avgWaitMins: avgWaitMins },
+                activeProtocol: activeProtocol, reports: reports, prescriptions: prescriptions, clinicClosed: false
             };
 
             document.getElementById('loginScreen').classList.add('hidden');
             document.getElementById('dashboardScreen').classList.remove('hidden');
-            
             loadDashboardData(currentPatientState);
             btn.innerHTML = ogBtnHtml;
-
         } catch (e) {
             showToast(currentLang === 'en' ? "Connection Error" : "कनेक्शन त्रुटि", "error");
             btn.innerHTML = ogBtnHtml;
@@ -428,18 +353,13 @@
     }
 
     function loadDashboardData(data) {
-        // User Info
         document.getElementById('userNameDisplay').innerText = data.name;
         document.getElementById('userInitial').innerText = data.name.charAt(0).toUpperCase();
         
-        // Clinic Closed Flag
         if(data.clinicClosed) document.getElementById('clinicClosedBanner').classList.remove('hidden');
         else document.getElementById('clinicClosedBanner').classList.add('hidden');
 
-        // Queue Logic
-        const qPrefix = document.getElementById('qEstPrefix');
-        const qEstTime = document.getElementById('qEstTime');
-        const qBar = document.getElementById('qProgressBar');
+        const qPrefix = document.getElementById('qEstPrefix'), qEstTime = document.getElementById('qEstTime'), qBar = document.getElementById('qProgressBar');
 
         if (!data.queue.inQueue) {
             document.getElementById('qCurrentToken').innerText = `-`;
@@ -457,55 +377,39 @@
             if (diff <= 0) {
                 qEstTime.innerText = i18n[currentLang]['queue_turn'];
                 qEstTime.className = "text-brandDone font-extrabold";
-                qBar.style.width = '100%';
-                qBar.className = "h-full bg-brandDone progress-bar-fill rounded-full";
+                qBar.style.width = '100%'; qBar.className = "h-full bg-brandDone progress-bar-fill rounded-full";
             } else {
                 const estMins = diff * data.queue.avgWaitMins;
                 qEstTime.innerText = `~${estMins} ${i18n[currentLang]['queue_mins']}`;
                 qEstTime.className = "text-textMain font-extrabold";
-                
                 let percent = (data.queue.currentToken / data.queue.yourToken) * 100;
                 if(percent > 100) percent = 100;
-                qBar.style.width = `${percent}%`;
-                qBar.className = "h-full bg-brandWait progress-bar-fill rounded-full";
+                qBar.style.width = `${percent}%`; qBar.className = "h-full bg-brandWait progress-bar-fill rounded-full";
             }
         }
-
-        renderMedicineTracker();
-        renderVault();
+        renderMedicineTracker(); renderVault();
     }
 
-    // Interactive Medicine Tracker Logic (Strictly uses Emojis, no Phosphor icons)
     function getTimingEmojiAndColor(timingStr) {
         const t = timingStr.toLowerCase();
-        if (t.includes('morning') || t.includes('breakfast') || t.includes('wake')) {
-            return { emoji: '☀️', color: 'text-amber-600', bg: 'bg-amber-50', border: 'border-amber-200' };
-        } else if (t.includes('night') || t.includes('dinner') || t.includes('sleep') || t.includes('evening')) {
-            return { emoji: '🌙', color: 'text-indigo-600', bg: 'bg-indigo-50', border: 'border-indigo-200' };
-        } else {
-            return { emoji: '🌤️', color: 'text-orange-600', bg: 'bg-orange-50', border: 'border-orange-200' }; // Afternoon/General
-        }
+        if (t.includes('morning') || t.includes('breakfast') || t.includes('wake')) return { emoji: '☀️', color: 'text-amber-600', bg: 'bg-amber-50', border: 'border-amber-200' };
+        else if (t.includes('night') || t.includes('dinner') || t.includes('sleep') || t.includes('evening')) return { emoji: '🌙', color: 'text-indigo-600', bg: 'bg-indigo-50', border: 'border-indigo-200' };
+        else return { emoji: '🌤️', color: 'text-orange-600', bg: 'bg-orange-50', border: 'border-orange-200' }; 
     }
 
     function renderMedicineTracker() {
         const list = document.getElementById('medicineList');
         if(!currentPatientState.activeProtocol || currentPatientState.activeProtocol.length === 0) {
-            list.innerHTML = `<p class="text-center text-xs text-textMuted py-4">${i18n[currentLang]['med_empty']}</p>`;
-            return;
+            list.innerHTML = `<p class="text-center text-xs text-textMuted py-4">${i18n[currentLang]['med_empty']}</p>`; return;
         }
 
         list.innerHTML = currentPatientState.activeProtocol.map(med => {
             const style = getTimingEmojiAndColor(med.timing);
-            
-            // Godmode: Check for Warm water hint, using emoji instead of phosphor icon
             const hasWarmWater = med.timing.toLowerCase().includes('warm water') || med.timing.toLowerCase().includes('गर्म');
             const warmBadge = hasWarmWater ? `<span class="inline-flex items-center gap-1 bg-red-50 text-red-600 text-[10px] font-bold px-1.5 py-0.5 rounded border border-red-100 ml-2">☕ ${i18n[currentLang]['med_warm']}</span>` : '';
-
             return `
                 <div class="flex items-start gap-3 p-3 rounded-2xl border ${style.border} ${style.bg} transition-colors">
-                    <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm shrink-0 border ${style.border} text-xl">
-                        ${style.emoji}
-                    </div>
+                    <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm shrink-0 border ${style.border} text-xl">${style.emoji}</div>
                     <div class="flex-1 pt-0.5">
                         <div class="flex justify-between items-start">
                             <h4 class="font-bold text-textMain text-sm pr-2">${med.name}</h4>
@@ -518,12 +422,9 @@
         }).join('');
     }
 
-    // Document Vault Logic
     function switchVaultTab(tab) {
         activeVaultTab = tab;
-        const btnRep = document.getElementById('tabReports');
-        const btnRx = document.getElementById('tabRx');
-        
+        const btnRep = document.getElementById('tabReports'); const btnRx = document.getElementById('tabRx');
         if(tab === 'reports') {
             btnRep.className = "px-4 py-2 bg-textMain text-white rounded-full text-xs font-bold whitespace-nowrap transition-colors";
             btnRx.className = "px-4 py-2 bg-inputBg text-textMuted rounded-full text-xs font-bold whitespace-nowrap border border-appBorder hover:text-textMain transition-colors";
@@ -539,8 +440,7 @@
         let dataList = activeVaultTab === 'reports' ? currentPatientState.reports : currentPatientState.prescriptions;
         
         if(!dataList || dataList.length === 0) {
-            content.innerHTML = `<p class="text-center text-xs text-textMuted py-6 border border-dashed border-appBorder rounded-2xl">${i18n[currentLang]['vault_empty']}</p>`;
-            return;
+            content.innerHTML = `<p class="text-center text-xs text-textMuted py-6 border border-dashed border-appBorder rounded-2xl">${i18n[currentLang]['vault_empty']}</p>`; return;
         }
 
         if(activeVaultTab === 'reports') {
@@ -548,14 +448,14 @@
                 <div class="p-3 bg-inputBg border border-appBorder rounded-2xl flex items-center justify-between group">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-xl bg-white text-brandWait flex items-center justify-center shrink-0 shadow-sm border border-appBorder/50">
-                            <i class="ph-fill ${item.type === 'pdf' ? 'ph-file-pdf' : 'ph-image'} text-xl"></i>
+                            <i class="ph-fill ${item.label.toLowerCase().includes('.pdf') ? 'ph-file-pdf' : 'ph-image'} text-xl"></i>
                         </div>
                         <div>
                             <p class="font-bold text-sm text-textMain line-clamp-1">${item.label}</p>
                             <p class="text-[10px] font-semibold text-textMuted">${item.date}</p>
                         </div>
                     </div>
-                    <button class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-textMain hover:bg-brandWait hover:text-white transition-colors border border-appBorder shadow-sm" onclick="showToast('${currentLang === 'en' ? 'Downloading...' : 'डाउनलोड हो रहा है...'}')">
+                    <button class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-textMain hover:bg-brandWait hover:text-white transition-colors border border-appBorder shadow-sm" onclick="proxyDownloadFile('${item.fileId}', '${item.label}')">
                         <i class="ph-bold ph-download-simple"></i>
                     </button>
                 </div>
@@ -565,76 +465,149 @@
                 <div class="p-3 bg-inputBg border border-appBorder rounded-2xl flex flex-col group">
                     <div class="flex justify-between items-center mb-2">
                         <span class="text-[10px] font-bold text-brandDone uppercase tracking-wider bg-brandDone/10 px-2 py-0.5 rounded">${item.date}</span>
-                        <button class="text-xs font-bold text-brandWait flex items-center gap-1 hover:underline" onclick="showToast('${currentLang === 'en' ? 'Opening PDF...' : 'PDF खुल रहा है...'}')">
-                            <i class="ph-bold ph-download-simple"></i> ${i18n[currentLang]['vault_download']}
-                        </button>
                     </div>
-                    <p class="text-xs font-medium text-textMain">${i18n[currentLang]['vault_complaint']} <span class="text-textMuted">${item.complaint}</span></p>
+                    <p class="text-xs font-medium text-textMain">${i18n[currentLang]['vault_complaint']} <span class="text-textMuted">${item.complaint || 'N/A'}</span></p>
                 </div>
             `).join('');
         }
     }
 
-    // Simulate File Upload Logic
-    function handleFileUpload(e) {
+    // ==========================================
+    // GODMODE: FILE UPLOAD & PROXY DOWNLOAD
+    // ==========================================
+    let pendingUploadPayload = null;
+
+    function processAndUploadFile(e) {
         const file = e.target.files[0];
         if(!file) return;
 
-        const modal = document.getElementById('uploadModal');
-        const content = document.getElementById('uploadModalContent');
-        const progressBar = document.getElementById('uploadProgressBar');
-        const icon = document.getElementById('uploadIcon');
-        const spinner = document.getElementById('uploadSpinner');
-        const title = document.getElementById('uploadTitle');
-        
         document.getElementById('uploadFileName').innerText = file.name;
-        
-        // Reset states
-        progressBar.style.width = '0%';
-        icon.className = "ph-fill ph-file-arrow-up text-3xl text-brandWait relative z-10";
-        spinner.classList.remove('hidden');
-        title.innerText = currentLang === 'en' ? "Uploading Document" : "डॉक्यूमेंट अपलोड हो रहा है";
-        
-        // Show modal
-        modal.classList.remove('hidden');
-        setTimeout(() => {
-            content.classList.remove('scale-95', 'opacity-0');
-            content.classList.add('scale-100', 'opacity-100');
-        }, 10);
+        openUploadModal();
 
-        // Simulate progress
-        let progress = 0;
-        const interval = setInterval(() => {
-            progress += Math.random() * 30;
-            if(progress > 100) progress = 100;
-            progressBar.style.width = `${progress}%`;
-            
-            if(progress === 100) {
-                clearInterval(interval);
-                setTimeout(() => {
-                    spinner.classList.add('hidden');
-                    icon.className = "ph-fill ph-check-circle text-3xl text-brandDone relative z-10";
-                    title.innerText = currentLang === 'en' ? "Upload Complete!" : "अपलोड पूरा हुआ!";
+        // Canvas Compression for Images
+        if(file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = ev => {
+                const img = new Image();
+                img.src = ev.target.result;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 1600;
+                    let width = img.width; let height = img.height;
+
+                    if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
+                    canvas.width = width; canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
                     
-                    // Prepend to current session records (Simulated backend push)
-                    currentPatientState.reports.unshift({
-                        id: 'R_NEW_' + Date.now(), label: file.name, date: new Date().toISOString().split('T')[0], type: file.type.includes('pdf') ? 'pdf' : 'image'
-                    });
-                    
-                    setTimeout(() => {
-                        content.classList.remove('scale-100', 'opacity-100');
-                        content.classList.add('scale-95', 'opacity-0');
-                        setTimeout(() => { 
-                            modal.classList.add('hidden'); 
-                            switchVaultTab('reports'); 
-                            showToast(currentLang === 'en' ? "Report uploaded successfully!" : "रिपोर्ट सफलतापूर्वक अपलोड हो गई!");
-                        }, 300);
-                    }, 1500);
-                }, 400);
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.75); // 75% compressed JPEG
+                    executeXHRUpload(file.name, 'image/jpeg', dataUrl);
+                }
             }
-        }, 400);
+        } else {
+            // PDF or other documents (No compression)
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = ev => { executeXHRUpload(file.name, file.type, ev.target.result); };
+        }
+        e.target.value = ''; 
+    }
+
+    function executeXHRUpload(fileName, mimeType, base64Data) {
+        pendingUploadPayload = { action: 'uploadReport', patientId: currentPatientState.patientId, fileName: fileName, mimeType: mimeType, base64Data: base64Data };
+
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", GAS_WEB_APP_URL, true);
         
-        e.target.value = ''; // reset input
+        // Progress Listener
+        xhr.upload.onprogress = function(e) {
+            if (e.lengthComputable) {
+                let percentComplete = (e.loaded / e.total) * 100;
+                document.getElementById('uploadProgressBar').style.width = percentComplete + '%';
+                document.getElementById('uploadPercentage').innerText = Math.round(percentComplete) + '%';
+            }
+        };
+
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                const res = JSON.parse(xhr.responseText);
+                if(res.success) {
+                    showUploadSuccess();
+                    currentPatientState.reports.unshift({ reportId: res.data.id, fileId: res.data.fileId, label: res.data.label, date: res.data.date, type: mimeType });
+                    setTimeout(() => { switchVaultTab('reports'); showToast(currentLang === 'en' ? "Uploaded successfully!" : "अपलोड सफल!"); }, 1500);
+                } else { showUploadError(res.message); }
+            } else { showUploadError("Server error."); }
+        };
+
+        xhr.onerror = function() { showUploadError(currentLang === 'en' ? "Network disconnected." : "नेटवर्क समस्या।"); };
+        xhr.send(JSON.stringify(pendingUploadPayload));
+    }
+
+    function retryUpload() {
+        showUploadProgressUI();
+        if(pendingUploadPayload) {
+            executeXHRUpload(pendingUploadPayload.fileName, pendingUploadPayload.mimeType, pendingUploadPayload.base64Data);
+        }
+    }
+
+    // Proxy Download Logic
+    async function proxyDownloadFile(fileId, fileName) {
+        if(!fileId) { showToast("File not available", "error"); return; }
+        showToast(currentLang === 'en' ? 'Fetching secure document...' : 'डॉक्यूमेंट लाया जा रहा है...');
+        try {
+            const res = await fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: 'downloadReport', fileId: fileId }) });
+            const data = await res.json();
+            if(data.success) {
+                // Force Native Download via anchor tag click
+                const a = document.createElement("a");
+                a.href = `data:${data.mimeType};base64,${data.base64Data}`;
+                a.download = data.fileName || fileName;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                showToast("Download started!");
+            } else { showToast(data.message, "error"); }
+        } catch(e) { showToast("Failed to download.", "error"); }
+    }
+
+    // Modal UI States
+    function openUploadModal() {
+        const modal = document.getElementById('uploadModal'); const content = document.getElementById('uploadModalContent');
+        showUploadProgressUI();
+        modal.classList.remove('hidden');
+        setTimeout(() => { content.classList.remove('scale-95', 'opacity-0'); content.classList.add('scale-100', 'opacity-100'); }, 10);
+    }
+    
+    function closeUploadModal() {
+        const modal = document.getElementById('uploadModal'); const content = document.getElementById('uploadModalContent');
+        content.classList.remove('scale-100', 'opacity-100'); content.classList.add('scale-95', 'opacity-0');
+        setTimeout(() => { modal.classList.add('hidden'); }, 300);
+    }
+
+    function showUploadProgressUI() {
+        document.getElementById('uploadStatusUI').classList.remove('hidden');
+        document.getElementById('uploadErrorUI').classList.add('hidden');
+        document.getElementById('uploadProgressBar').style.width = '0%';
+        document.getElementById('uploadPercentage').innerText = '0%';
+        document.getElementById('uploadSpinner').classList.remove('hidden');
+        document.getElementById('uploadIcon').className = "ph-fill ph-file-arrow-up text-3xl text-brandWait relative z-10";
+        document.getElementById('uploadTitle').innerText = i18n[currentLang]['up_title'];
+    }
+
+    function showUploadSuccess() {
+        document.getElementById('uploadSpinner').classList.add('hidden');
+        document.getElementById('uploadProgressBar').style.width = '100%';
+        document.getElementById('uploadPercentage').innerText = '100%';
+        document.getElementById('uploadIcon').className = "ph-fill ph-check-circle text-3xl text-brandDone relative z-10";
+        document.getElementById('uploadTitle').innerText = currentLang === 'en' ? "Upload Complete!" : "अपलोड पूरा हुआ!";
+        setTimeout(closeUploadModal, 1500);
+    }
+
+    function showUploadError(msg) {
+        document.getElementById('uploadStatusUI').classList.add('hidden');
+        document.getElementById('uploadErrorUI').classList.remove('hidden');
+        document.getElementById('uploadErrorMsg').innerText = msg;
     }
 
 </script>
