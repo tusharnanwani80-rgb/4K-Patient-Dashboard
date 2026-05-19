@@ -123,7 +123,7 @@
     </div>
 </div>
 
-<!-- Upload Progress Modal (Cloudinary XHR) -->
+<!-- Upload Progress Modal (Cloudinary Version) -->
 <div id="uploadModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[180] hidden flex flex-col justify-center items-center px-6">
     <div class="bg-white w-full max-w-[320px] rounded-3xl p-6 text-center transform scale-95 opacity-0 transition-all duration-300" id="uploadModalContent">
         <div id="uploadStatusUI">
@@ -133,7 +133,7 @@
             </div>
             <h3 class="text-lg font-bold text-textMain mb-1" id="uploadTitle" data-i18n="up_title">Uploading Document</h3>
             <p class="text-xs text-textMuted font-medium mb-4" id="uploadFileName">report.pdf</p>
-            <div class="w-full bg-inputBg h-2 rounded-full overflow-hidden mb-2" id="progressBarWrapper"><div id="uploadProgressBar" class="h-full bg-brandDone w-0"></div></div>
+            <div class="w-full bg-inputBg h-2 rounded-full overflow-hidden mb-2" id="progressBarWrapper"><div id="uploadProgressBar" class="h-full bg-brandDone w-0 transition-all duration-300"></div></div>
             <p class="text-[10px] font-bold text-textMuted uppercase" id="uploadPercentage">0%</p>
         </div>
         
@@ -152,10 +152,9 @@
     // ==========================================
     const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw1OqkYJl2CikO7y5SJRE4k9n2k3kr7wMGTa9O_eVsAPE82wVL86QJhrogcxGe1Z9LZ/exec";
     
-    // REPLACE THESE WITH YOUR CLOUDINARY DETAILS
-    const CLOUDINARY_CLOUD_NAME = "YOUR_CLOUD_NAME"; 
-    const CLOUDINARY_UPLOAD_PRESET = "YOUR_UNSIGNED_PRESET"; 
-    
+    // CLOUDINARY CONFIG
+    const CLOUDINARY_CLOUD_NAME = "dtqjynqbk"; 
+    const CLOUDINARY_UPLOAD_PRESET = "clinic_uploads"; 
     const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/auto/upload`;
 
     const i18n = {
@@ -306,7 +305,7 @@
                             <p class="text-[10px] font-semibold text-textMuted">${item.date}</p>
                         </div>
                     </div>
-                    <button class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-textMain hover:bg-brandWait hover:text-white transition-colors border border-appBorder shadow-sm" onclick="downloadReportFromHistory('${item.fileUrlOrId}', '${item.label}')">
+                    <button class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-textMain hover:bg-brandWait hover:text-white transition-colors border border-appBorder shadow-sm" onclick="downloadReportFromHistory('${item.fileId}', '${item.label}')">
                         <i class="ph-bold ph-download-simple"></i>
                     </button>
                 </div>
@@ -317,14 +316,9 @@
     }
 
     // ==========================================
-    // GODMODE: CLOUDINARY UPLOAD 
+    // GODMODE: FILE UPLOAD (Cloudinary Direct Integration)
     // ==========================================
     function processAndUploadFile(e) {
-        if(CLOUDINARY_CLOUD_NAME === "YOUR_CLOUD_NAME") {
-            alert("Developer Note: Please configure your Cloudinary Cloud Name and Preset in the code.");
-            return;
-        }
-        
         const file = e.target.files[0]; if(!file) return;
         document.getElementById('uploadFileName').innerText = file.name; openUploadModal();
 
@@ -335,7 +329,7 @@
         const xhr = new XMLHttpRequest();
         xhr.open("POST", CLOUDINARY_URL, true);
 
-        // Real-time Cloudinary upload progress!
+        // Real-time Cloudinary upload progress
         xhr.upload.onprogress = function(event) {
             if (event.lengthComputable) {
                 let percentComplete = (event.loaded / event.total) * 100;
@@ -353,6 +347,7 @@
                 document.getElementById('uploadSpinner').classList.remove('hidden');
                 
                 try {
+                    // Instantly send ONLY the resulting URL to Apps Script
                     const gasRes = await fetch(GAS_WEB_APP_URL, {
                         method: 'POST',
                         body: JSON.stringify({ action: 'uploadReport', patientId: currentPatientState.patientId, fileName: file.name, fileUrl: fileUrl })
@@ -371,30 +366,22 @@
                 showUploadError("Upload rejected by Cloudinary.");
             }
         };
+        
         xhr.onerror = function() { showUploadError(currentLang === 'en' ? "Network disconnected." : "नेटवर्क समस्या।"); };
         xhr.send(formData);
         e.target.value = ''; 
     }
 
     async function downloadReportFromHistory(fileUrlOrId, fileName) {
-        if(!fileUrlOrId) { showToast("File not available", "error"); return; }
+        if (!fileUrlOrId) { showToast("File not available", "error"); return; }
         
-        // Godmode: Cloudinary Direct Open
+        // Godmode: Directly open Cloudinary URL! No backend lag.
         if (String(fileUrlOrId).startsWith('http')) {
             window.open(fileUrlOrId, '_blank');
             return;
         }
 
-        // Legacy Google Drive Proxy fallback
-        showToast(currentLang === 'en' ? 'Fetching secure document...' : 'डॉक्यूमेंट लाया जा रहा है...');
-        try {
-            const res = await fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: 'downloadReport', fileId: fileUrlOrId }) });
-            const data = await res.json();
-            if(data.success) {
-                if(data.isHeavy) { window.open(data.url, '_blank'); showToast("Opening viewer..."); } 
-                else { const a = document.createElement("a"); a.href = `data:${data.mimeType};base64,${data.base64Data}`; a.download = data.fileName || fileName; document.body.appendChild(a); a.click(); document.body.removeChild(a); showToast("Download started!"); }
-            } else showToast(data.message, "error"); 
-        } catch(e) { showToast("Failed to download.", "error"); }
+        showToast("Old files are no longer supported. Please re-upload.", "error");
     }
 
     function openUploadModal() { const modal = document.getElementById('uploadModal'); const content = document.getElementById('uploadModalContent'); showUploadProgressUI(); modal.classList.remove('hidden'); setTimeout(() => { content.classList.remove('scale-95', 'opacity-0'); content.classList.add('scale-100', 'opacity-100'); }, 10); }
