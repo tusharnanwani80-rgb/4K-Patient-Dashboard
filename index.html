@@ -32,119 +32,59 @@
     <style>
         body { background-color: var(--appBg); color: var(--textMain); -webkit-tap-highlight-color: transparent; }
         .app-container { width: 100%; max-width: 480px; margin: 0 auto; background-color: #F8FAFC; min-height: 100vh; position: relative; overflow-x: hidden; }
-        
-        .fade-in { animation: fadeIn 0.4s ease forwards; }
-        .slide-up { animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .progress-bar-fill { transition: width 0.3s ease; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .fade-in { animation: fadeIn 0.4s ease forwards; } .slide-up { animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } } @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .progress-bar-fill { transition: width 0.3s ease; } .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body class="antialiased selection:bg-brandWait selection:text-white">
 
 <div id="toast" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-[200] flex items-center gap-3 px-6 py-3 rounded-full font-bold text-sm shadow-xl transition-all duration-300 -translate-y-20 opacity-0 max-w-[90%] whitespace-nowrap pointer-events-none bg-textMain text-white">
-    <i id="toastIcon" class="ph-fill ph-check-circle text-xl"></i>
-    <span id="toastMsg">Notification</span>
+    <i id="toastIcon" class="ph-fill ph-check-circle text-xl"></i><span id="toastMsg">Notification</span>
 </div>
 
 <div class="app-container md:border-x md:border-appBorder shadow-2xl bg-appBg">
-
     <!-- LOGIN SCREEN -->
     <div id="loginScreen" class="min-h-screen flex flex-col justify-center px-6 py-12 relative overflow-hidden z-10 fade-in">
         <div class="absolute top-[-10%] left-[-10%] w-64 h-64 bg-brandWait/10 rounded-full blur-3xl -z-10"></div>
         <div class="absolute bottom-[-10%] right-[-10%] w-64 h-64 bg-brandDone/10 rounded-full blur-3xl -z-10"></div>
-
-        <div class="text-center mb-10">
-            <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_8px_30px_rgba(0,0,0,0.05)] border border-appBorder">
-                <i class="ph-fill ph-leaf text-4xl text-brandDone"></i>
-            </div>
-            <h1 class="text-3xl font-extrabold text-textMain tracking-tight mb-2" data-i18n="login_welcome">Welcome to Clinic</h1>
-            <p class="text-sm font-medium text-textMuted" data-i18n="login_sub">Naturopathy Care by Dr. Pise</p>
-        </div>
-
+        <div class="text-center mb-10"><div class="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_8px_30px_rgba(0,0,0,0.05)] border border-appBorder"><i class="ph-fill ph-leaf text-4xl text-brandDone"></i></div><h1 class="text-3xl font-extrabold text-textMain tracking-tight mb-2" data-i18n="login_welcome">Welcome to Clinic</h1><p class="text-sm font-medium text-textMuted" data-i18n="login_sub">Naturopathy Care by Dr. Pise</p></div>
         <div class="bg-white p-6 rounded-[32px] shadow-[0_8px_30px_rgba(0,0,0,0.04)] border border-appBorder slide-up">
             <label class="text-[11px] font-bold text-textMuted tracking-wider mb-2 block uppercase" data-i18n="login_label">ENTER ID OR PHONE NUMBER</label>
-            <div class="relative mb-6">
-                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"><i class="ph-fill ph-identification-card text-xl text-textMuted"></i></div>
-                <input type="text" id="loginInput" class="w-full bg-inputBg text-textMain border border-appBorder rounded-2xl py-4 pl-12 pr-4 font-bold placeholder:text-textMuted/50 focus:ring-2 focus:ring-brandWait/20 focus:border-brandWait transition-all outline-none" placeholder="e.g., NCC-042 or 9876543210" onkeypress="if(event.key === 'Enter') handleLogin()">
-            </div>
-            <button onclick="handleLogin()" id="btnLogin" class="w-full py-4 bg-brandWait text-white rounded-2xl font-extrabold text-base flex justify-center items-center gap-2 hover:opacity-90 transition-opacity shadow-lg shadow-brandWait/20">
-                <span data-i18n="login_btn">Access My Portal</span> <i class="ph-bold ph-arrow-right"></i>
-            </button>
-            
-            <div class="mt-4 text-center">
-                <button onclick="toggleLanguage()" class="text-xs font-bold text-textMuted hover:text-textMain transition-colors flex items-center justify-center gap-1 mx-auto bg-inputBg px-3 py-1.5 rounded-full border border-appBorder">
-                    <i class="ph-bold ph-translate"></i> <span id="langBtnText">हिंदी में देखें (Translate)</span>
-                </button>
-            </div>
+            <div class="relative mb-6"><div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"><i class="ph-fill ph-identification-card text-xl text-textMuted"></i></div><input type="text" id="loginInput" class="w-full bg-inputBg text-textMain border border-appBorder rounded-2xl py-4 pl-12 pr-4 font-bold placeholder:text-textMuted/50 focus:ring-2 focus:ring-brandWait/20 focus:border-brandWait transition-all outline-none" placeholder="e.g., NCC-042 or 9876543210" onkeypress="if(event.key === 'Enter') handleLogin()"></div>
+            <button onclick="handleLogin()" id="btnLogin" class="w-full py-4 bg-brandWait text-white rounded-2xl font-extrabold text-base flex justify-center items-center gap-2 hover:opacity-90 transition-opacity shadow-lg shadow-brandWait/20"><span data-i18n="login_btn">Access My Portal</span> <i class="ph-bold ph-arrow-right"></i></button>
+            <div class="mt-4 text-center"><button onclick="toggleLanguage()" class="text-xs font-bold text-textMuted hover:text-textMain transition-colors flex items-center justify-center gap-1 mx-auto bg-inputBg px-3 py-1.5 rounded-full border border-appBorder"><i class="ph-bold ph-translate"></i> <span id="langBtnText">हिंदी में देखें (Translate)</span></button></div>
         </div>
     </div>
 
     <!-- MAIN DASHBOARD -->
     <div id="dashboardScreen" class="hidden min-h-screen pb-10 fade-in">
-        
         <div class="bg-white pt-10 pb-6 px-6 rounded-b-[40px] shadow-sm border-b border-appBorder sticky top-0 z-50">
             <div class="flex justify-between items-center mb-2">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-brandDone/10 text-brandDone rounded-full flex items-center justify-center font-bold text-lg" id="userInitial">P</div>
-                    <div>
-                        <p class="text-[10px] font-bold text-textMuted uppercase tracking-wider" data-i18n="dash_hello">Hello,</p>
-                        <h2 class="text-lg font-extrabold text-textMain leading-tight" id="userNameDisplay">Patient Name</h2>
-                    </div>
-                </div>
-                <div class="flex gap-2">
-                    <button onclick="toggleLanguage()" class="w-10 h-10 bg-inputBg rounded-full flex items-center justify-center text-textMuted border border-appBorder hover:bg-gray-100 transition-colors"><span class="font-bold text-sm">अ/A</span></button>
-                    <button onclick="logout()" class="w-10 h-10 bg-red-50 text-red-500 rounded-full flex items-center justify-center border border-red-100 hover:bg-red-100 transition-colors"><i class="ph-bold ph-sign-out text-lg"></i></button>
-                </div>
+                <div class="flex items-center gap-3"><div class="w-10 h-10 bg-brandDone/10 text-brandDone rounded-full flex items-center justify-center font-bold text-lg" id="userInitial">P</div><div><p class="text-[10px] font-bold text-textMuted uppercase tracking-wider" data-i18n="dash_hello">Hello,</p><h2 class="text-lg font-extrabold text-textMain leading-tight" id="userNameDisplay">Patient Name</h2></div></div>
+                <div class="flex gap-2"><button onclick="toggleLanguage()" class="w-10 h-10 bg-inputBg rounded-full flex items-center justify-center text-textMuted border border-appBorder hover:bg-gray-100 transition-colors"><span class="font-bold text-sm">अ/A</span></button><button onclick="logout()" class="w-10 h-10 bg-red-50 text-red-500 rounded-full flex items-center justify-center border border-red-100 hover:bg-red-100 transition-colors"><i class="ph-bold ph-sign-out text-lg"></i></button></div>
             </div>
         </div>
 
         <div class="px-5 pt-6 space-y-5">
-            
             <div id="clinicClosedBanner" class="hidden bg-red-50 border border-red-200 p-4 rounded-2xl flex gap-3 items-start slide-up">
-                <i class="ph-fill ph-warning-circle text-red-500 text-xl mt-0.5"></i>
-                <div>
-                    <h4 class="font-bold text-red-700 text-sm" data-i18n="closed_title">Clinic is Closed Today</h4>
-                    <p class="text-xs text-red-600 mt-1" data-i18n="closed_desc">Dr. Pise is out of town. Please leave a WhatsApp message for emergencies.</p>
-                </div>
+                <i class="ph-fill ph-warning-circle text-red-500 text-xl mt-0.5"></i><div><h4 class="font-bold text-red-700 text-sm" data-i18n="closed_title">Clinic is Closed Today</h4><p class="text-xs text-red-600 mt-1" data-i18n="closed_desc">Dr. Pise is out of town. Please leave a WhatsApp message for emergencies.</p></div>
             </div>
 
             <!-- LIVE QUEUE CARD -->
             <div class="bg-white border border-appBorder rounded-[32px] p-5 shadow-[0_4px_20px_rgba(0,0,0,0.03)] slide-up" style="animation-delay: 0.1s;">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="font-extrabold text-textMain flex items-center gap-2"><i class="ph-fill ph-users-three text-brandWait text-xl"></i> <span data-i18n="queue_title">Live Queue Status</span></h3>
-                    <div class="px-2.5 py-1 bg-green-50 text-green-700 text-[10px] font-bold rounded-full border border-green-200 flex items-center gap-1">
-                        <div class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div> Live
-                    </div>
-                </div>
+                <div class="flex justify-between items-center mb-4"><h3 class="font-extrabold text-textMain flex items-center gap-2"><i class="ph-fill ph-users-three text-brandWait text-xl"></i> <span data-i18n="queue_title">Live Queue Status</span></h3><div class="px-2.5 py-1 bg-green-50 text-green-700 text-[10px] font-bold rounded-full border border-green-200 flex items-center gap-1"><div class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div> Live</div></div>
                 
                 <div class="bg-inputBg rounded-2xl p-4 mb-4 border border-appBorder/50">
-                    <div class="flex justify-between items-end mb-2">
-                        <div>
-                            <p class="text-[10px] font-bold text-textMuted uppercase tracking-wider" data-i18n="queue_current">Current Token</p>
-                            <p class="text-2xl font-black text-textMain" id="qCurrentToken">-</p>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-[10px] font-bold text-textMuted uppercase tracking-wider" data-i18n="queue_yours">Your Token</p>
-                            <p class="text-2xl font-black text-brandWait" id="qYourToken">-</p>
-                        </div>
-                    </div>
-                    <div class="w-full bg-gray-200 h-2 rounded-full overflow-hidden mb-2">
-                        <div id="qProgressBar" class="h-full bg-brandWait progress-bar-fill rounded-full" style="width: 0%;"></div>
-                    </div>
+                    <div class="flex justify-between items-end mb-2"><div><p class="text-[10px] font-bold text-textMuted uppercase tracking-wider" data-i18n="queue_current">Current Token</p><p class="text-2xl font-black text-textMain" id="qCurrentToken">-</p></div><div class="text-right"><p class="text-[10px] font-bold text-textMuted uppercase tracking-wider" data-i18n="queue_yours">Your Token</p><p class="text-2xl font-black text-brandWait" id="qYourToken">-</p></div></div>
+                    <div class="w-full bg-gray-200 h-2 rounded-full overflow-hidden mb-2"><div id="qProgressBar" class="h-full bg-brandWait progress-bar-fill rounded-full" style="width: 0%;"></div></div>
                     <p class="text-xs font-semibold text-textMuted text-center mt-3"><span id="qEstPrefix" data-i18n="queue_est">Est. Wait Time:</span> <strong class="text-textMain" id="qEstTime">-</strong></p>
                 </div>
             </div>
 
             <!-- MEDICINE TRACKER CARD -->
             <div class="bg-white border border-appBorder rounded-[32px] p-5 shadow-[0_4px_20px_rgba(0,0,0,0.03)] slide-up" style="animation-delay: 0.2s;">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="font-extrabold text-textMain flex items-center gap-2"><i class="ph-fill ph-pill text-brandConsult text-xl"></i> <span data-i18n="med_title">Medicine Tracker</span></h3>
-                    <span class="text-[10px] font-bold text-textMuted bg-inputBg px-2 py-1 rounded-lg border border-appBorder" id="rxDate">Latest</span>
-                </div>
+                <div class="flex justify-between items-center mb-4"><h3 class="font-extrabold text-textMain flex items-center gap-2"><i class="ph-fill ph-pill text-brandConsult text-xl"></i> <span data-i18n="med_title">Medicine Tracker</span></h3><span class="text-[10px] font-bold text-textMuted bg-inputBg px-2 py-1 rounded-lg border border-appBorder" id="rxDate">Latest</span></div>
                 <div id="medicineList" class="space-y-3"></div>
             </div>
 
@@ -153,26 +93,15 @@
                 <div class="absolute right-[-10%] top-[-20%] w-32 h-32 bg-white/5 rounded-full blur-2xl"></div>
                 <h3 class="font-extrabold text-white text-lg mb-1" data-i18n="call_title">Book New Appointment</h3>
                 <p class="text-sm text-gray-300 mb-4" data-i18n="call_sub">Dr. Pise (10 Yrs Exp.) • Naturopathy Clinic, Wardha</p>
-                <div class="flex items-center gap-2 mb-5">
-                    <i class="ph-fill ph-clock text-gray-400"></i>
-                    <span class="text-xs font-semibold text-gray-300" data-i18n="call_time">Timing: 9 AM to 5 PM (Mon - Sat)</span>
-                </div>
-                <a href="tel:+918010140632" class="w-full py-4 bg-white text-textMain rounded-2xl font-extrabold text-sm flex justify-center items-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-transform">
-                    <i class="ph-fill ph-phone-call text-brandWait text-xl"></i> <span data-i18n="call_btn">Call Now: +91 80101 40632</span>
-                </a>
+                <div class="flex items-center gap-2 mb-5"><i class="ph-fill ph-clock text-gray-400"></i><span class="text-xs font-semibold text-gray-300" data-i18n="call_time">Timing: 9 AM to 5 PM (Mon - Sat)</span></div>
+                <a href="tel:+918010140632" class="w-full py-4 bg-white text-textMain rounded-2xl font-extrabold text-sm flex justify-center items-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-transform"><i class="ph-fill ph-phone-call text-brandWait text-xl"></i> <span data-i18n="call_btn">Call Now: +91 80101 40632</span></a>
             </div>
 
             <!-- DOCUMENT VAULT -->
             <div class="bg-white border border-appBorder rounded-[32px] p-5 shadow-[0_4px_20px_rgba(0,0,0,0.03)] slide-up" style="animation-delay: 0.4s;">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="font-extrabold text-textMain flex items-center gap-2"><i class="ph-fill ph-folder-notch text-brandDone text-xl"></i> <span data-i18n="vault_title">Document Vault</span></h3>
-                </div>
+                <div class="flex justify-between items-center mb-4"><h3 class="font-extrabold text-textMain flex items-center gap-2"><i class="ph-fill ph-folder-notch text-brandDone text-xl"></i> <span data-i18n="vault_title">Document Vault</span></h3></div>
                 
-                <div class="flex gap-2 overflow-x-auto no-scrollbar pb-2 mb-2" id="vaultTabs">
-                    <button onclick="switchVaultTab('reports')" id="tabReports" class="px-4 py-2 bg-textMain text-white rounded-full text-xs font-bold whitespace-nowrap transition-colors" data-i18n="vault_tab_reports">Lab Reports</button>
-                    <button onclick="switchVaultTab('prescriptions')" id="tabRx" class="px-4 py-2 bg-inputBg text-textMuted rounded-full text-xs font-bold whitespace-nowrap border border-appBorder hover:text-textMain transition-colors" data-i18n="vault_tab_rx">Past Prescriptions</button>
-                </div>
-
+                <div class="flex gap-2 overflow-x-auto no-scrollbar pb-2 mb-2" id="vaultTabs"><button onclick="switchVaultTab('reports')" id="tabReports" class="px-4 py-2 bg-textMain text-white rounded-full text-xs font-bold whitespace-nowrap transition-colors" data-i18n="vault_tab_reports">Lab Reports</button><button onclick="switchVaultTab('prescriptions')" id="tabRx" class="px-4 py-2 bg-inputBg text-textMuted rounded-full text-xs font-bold whitespace-nowrap border border-appBorder hover:text-textMain transition-colors" data-i18n="vault_tab_rx">Past Prescriptions</button></div>
                 <div id="vaultContent" class="space-y-3 min-h-[100px]"></div>
 
                 <div class="mt-4 pt-4 border-t border-appBorder">
@@ -183,6 +112,7 @@
                 </div>
             </div>
 
+            <!-- CREDITS FOOTER -->
             <div class="text-center pt-4 pb-8 slide-up" style="animation-delay: 0.5s;">
                 <a href="https://tusharnanwani80-rgb.github.io/seen-and-sold-check/" target="_blank" class="block group cursor-pointer">
                     <p class="text-[10px] font-bold tracking-widest text-textMuted/60 uppercase group-hover:text-brandWait transition-colors" data-i18n="footer_made">This app was made by</p>
@@ -193,7 +123,7 @@
     </div>
 </div>
 
-<!-- Upload Progress Modal (Godmode XHR) -->
+<!-- Upload Progress Modal (Cloudinary XHR) -->
 <div id="uploadModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[180] hidden flex flex-col justify-center items-center px-6">
     <div class="bg-white w-full max-w-[320px] rounded-3xl p-6 text-center transform scale-95 opacity-0 transition-all duration-300" id="uploadModalContent">
         <div id="uploadStatusUI">
@@ -203,32 +133,30 @@
             </div>
             <h3 class="text-lg font-bold text-textMain mb-1" id="uploadTitle" data-i18n="up_title">Uploading Document</h3>
             <p class="text-xs text-textMuted font-medium mb-4" id="uploadFileName">report.pdf</p>
-            <div class="w-full bg-inputBg h-2 rounded-full overflow-hidden mb-2" id="progressBarWrapper">
-                <div id="uploadProgressBar" class="h-full bg-brandDone w-0"></div>
-            </div>
+            <div class="w-full bg-inputBg h-2 rounded-full overflow-hidden mb-2" id="progressBarWrapper"><div id="uploadProgressBar" class="h-full bg-brandDone w-0"></div></div>
             <p class="text-[10px] font-bold text-textMuted uppercase" id="uploadPercentage">0%</p>
         </div>
         
-        <!-- Retry Error State -->
         <div id="uploadErrorUI" class="hidden">
-            <div class="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-red-200">
-                <i class="ph-fill ph-warning-circle text-3xl text-red-500"></i>
-            </div>
+            <div class="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-red-200"><i class="ph-fill ph-warning-circle text-3xl text-red-500"></i></div>
             <h3 class="text-lg font-bold text-red-600 mb-1" data-i18n="up_error">Upload Failed</h3>
             <p class="text-xs text-textMuted font-medium mb-6" id="uploadErrorMsg">Network disconnected.</p>
-            <div class="flex gap-2">
-                <button onclick="closeUploadModal()" class="flex-1 py-3 bg-inputBg text-textMain rounded-xl font-bold text-sm">Cancel</button>
-                <button onclick="retryUpload()" class="flex-1 py-3 bg-brandWait text-white rounded-xl font-bold text-sm">Retry</button>
-            </div>
+            <div class="flex gap-2"><button onclick="closeUploadModal()" class="flex-1 py-3 bg-inputBg text-textMain rounded-xl font-bold text-sm">Cancel</button></div>
         </div>
     </div>
 </div>
 
 <script>
     // ==========================================
-    // BACKEND CONNECTION
+    // CONFIGURATION & SECRETS
     // ==========================================
     const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw1OqkYJl2CikO7y5SJRE4k9n2k3kr7wMGTa9O_eVsAPE82wVL86QJhrogcxGe1Z9LZ/exec";
+    
+    // REPLACE THESE WITH YOUR CLOUDINARY DETAILS
+    const CLOUDINARY_CLOUD_NAME = "YOUR_CLOUD_NAME"; 
+    const CLOUDINARY_UPLOAD_PRESET = "YOUR_UNSIGNED_PRESET"; 
+    
+    const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/auto/upload`;
 
     const i18n = {
         en: {
@@ -253,13 +181,10 @@
         }
     };
 
-    let currentLang = 'en';
-    let currentPatientState = null;
-    let activeVaultTab = 'reports';
+    let currentLang = 'en'; let currentPatientState = null; let activeVaultTab = 'reports';
 
     function toggleLanguage() {
-        currentLang = currentLang === 'en' ? 'hi' : 'en';
-        document.getElementById('langBtnText').innerText = currentLang === 'en' ? "हिंदी में देखें (Translate)" : "View in English";
+        currentLang = currentLang === 'en' ? 'hi' : 'en'; document.getElementById('langBtnText').innerText = currentLang === 'en' ? "हिंदी में देखें (Translate)" : "View in English";
         const elements = document.querySelectorAll('[data-i18n]');
         elements.forEach(el => {
             const key = el.getAttribute('data-i18n');
@@ -276,30 +201,21 @@
     }
 
     function showToast(message, type = 'success') {
-        const toast = document.getElementById('toast');
-        document.getElementById('toastMsg').innerText = message;
-        document.getElementById('toastIcon').className = type === 'success' ? 'ph-fill ph-check-circle text-xl' : 'ph-fill ph-warning-circle text-xl text-red-300';
+        const toast = document.getElementById('toast'); document.getElementById('toastMsg').innerText = message; document.getElementById('toastIcon').className = type === 'success' ? 'ph-fill ph-check-circle text-xl' : 'ph-fill ph-warning-circle text-xl text-red-300';
         toast.className = `fixed top-4 left-1/2 transform -translate-x-1/2 z-[200] flex items-center gap-3 px-6 py-3 rounded-full font-bold text-sm shadow-xl transition-all duration-300 max-w-[90%] whitespace-nowrap pointer-events-none bg-textMain text-white`;
         requestAnimationFrame(() => { toast.classList.remove('-translate-y-20', 'opacity-0'); toast.classList.add('translate-y-0', 'opacity-100'); });
         setTimeout(() => { toast.classList.remove('translate-y-0', 'opacity-100'); toast.classList.add('-translate-y-20', 'opacity-0'); }, 3000);
     }
 
     async function handleLogin() {
-        const input = document.getElementById('loginInput').value.trim();
-        const btn = document.getElementById('btnLogin');
-        const ogBtnHtml = btn.innerHTML;
-        
+        const input = document.getElementById('loginInput').value.trim(); const btn = document.getElementById('btnLogin'); const ogBtnHtml = btn.innerHTML;
         if(input.length < 5) { showToast(currentLang === 'en' ? "Please enter valid ID or Phone" : "कृपया सही आईडी या फोन दर्ज करें", "error"); return; }
         btn.innerHTML = `<i class="ph ph-spinner-gap animate-spin text-xl"></i>`;
         
         try {
             let res = await fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: 'searchPatient', query: input }) });
             let data = await res.json();
-            
-            if(!data.success || data.data.length === 0) {
-                showToast(currentLang === 'en' ? "Patient not found. Check ID/Phone." : "मरीज़ नहीं मिला। आईडी/फ़ोन जांचें।", "error");
-                btn.innerHTML = ogBtnHtml; return;
-            }
+            if(!data.success || data.data.length === 0) { showToast(currentLang === 'en' ? "Patient not found." : "मरीज़ नहीं मिला।", "error"); btn.innerHTML = ogBtnHtml; return; }
             const patient = data.data[0];
 
             res = await fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: 'getPatientHistory', patientId: patient.patientId }) });
@@ -310,81 +226,42 @@
             const queueData = await res.json();
 
             res = await fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: 'getSystemStatus' }) });
-            const settingsData = await res.json();
-            const avgWaitMins = (settingsData.success && settingsData.data.avgWaitTime) ? parseInt(settingsData.data.avgWaitTime, 10) : 15;
+            const settingsData = await res.json(); const avgWaitMins = (settingsData.success && settingsData.data.avgWaitTime) ? parseInt(settingsData.data.avgWaitTime, 10) : 15;
 
             let currentToken = 0, yourToken = 0, inQueue = false;
             if (queueData.success && queueData.data.length > 0) {
-                const qList = queueData.data;
-                const activeItem = qList.find(q => q.status === 'In Consultation') || qList.find(q => q.status === 'Waiting');
+                const qList = queueData.data; const activeItem = qList.find(q => q.status === 'In Consultation') || qList.find(q => q.status === 'Waiting');
                 currentToken = activeItem ? activeItem.tokenNo : qList[0].tokenNo;
                 const myItem = qList.find(q => q.patientId === patient.patientId && (q.status === 'Waiting' || q.status === 'Booked' || q.status === 'In Consultation'));
                 if (myItem) { yourToken = myItem.tokenNo; inQueue = true; }
             }
 
             let activeProtocol = [], reports = [], prescriptions = [];
-            if(historyData.success) {
-                prescriptions = historyData.data.prescriptions || [];
-                reports = historyData.data.reports || [];
-                if(prescriptions.length > 0) activeProtocol = prescriptions[0].protocol || [];
-            }
+            if(historyData.success) { prescriptions = historyData.data.prescriptions || []; reports = historyData.data.reports || []; if(prescriptions.length > 0) activeProtocol = prescriptions[0].protocol || []; }
 
-            currentPatientState = {
-                patientId: patient.patientId, name: patient.name, phone: patient.phone,
-                queue: { inQueue: inQueue, currentToken: currentToken, yourToken: yourToken, avgWaitMins: avgWaitMins },
-                activeProtocol: activeProtocol, reports: reports, prescriptions: prescriptions, clinicClosed: false
-            };
+            currentPatientState = { patientId: patient.patientId, name: patient.name, phone: patient.phone, queue: { inQueue: inQueue, currentToken: currentToken, yourToken: yourToken, avgWaitMins: avgWaitMins }, activeProtocol: activeProtocol, reports: reports, prescriptions: prescriptions, clinicClosed: false };
 
-            document.getElementById('loginScreen').classList.add('hidden');
-            document.getElementById('dashboardScreen').classList.remove('hidden');
-            loadDashboardData(currentPatientState);
-            btn.innerHTML = ogBtnHtml;
-        } catch (e) {
-            showToast(currentLang === 'en' ? "Connection Error" : "कनेक्शन त्रुटि", "error");
-            btn.innerHTML = ogBtnHtml;
-        }
+            document.getElementById('loginScreen').classList.add('hidden'); document.getElementById('dashboardScreen').classList.remove('hidden');
+            loadDashboardData(currentPatientState); btn.innerHTML = ogBtnHtml;
+        } catch (e) { showToast(currentLang === 'en' ? "Connection Error" : "कनेक्शन त्रुटि", "error"); btn.innerHTML = ogBtnHtml; }
     }
 
-    function logout() {
-        currentPatientState = null;
-        document.getElementById('dashboardScreen').classList.add('hidden');
-        document.getElementById('loginScreen').classList.remove('hidden');
-        document.getElementById('loginInput').value = '';
-    }
+    function logout() { currentPatientState = null; document.getElementById('dashboardScreen').classList.add('hidden'); document.getElementById('loginScreen').classList.remove('hidden'); document.getElementById('loginInput').value = ''; }
 
     function loadDashboardData(data) {
-        document.getElementById('userNameDisplay').innerText = data.name;
-        document.getElementById('userInitial').innerText = data.name.charAt(0).toUpperCase();
-        
-        if(data.clinicClosed) document.getElementById('clinicClosedBanner').classList.remove('hidden');
-        else document.getElementById('clinicClosedBanner').classList.add('hidden');
-
+        document.getElementById('userNameDisplay').innerText = data.name; document.getElementById('userInitial').innerText = data.name.charAt(0).toUpperCase();
+        if(data.clinicClosed) document.getElementById('clinicClosedBanner').classList.remove('hidden'); else document.getElementById('clinicClosedBanner').classList.add('hidden');
         const qPrefix = document.getElementById('qEstPrefix'), qEstTime = document.getElementById('qEstTime'), qBar = document.getElementById('qProgressBar');
 
         if (!data.queue.inQueue) {
-            document.getElementById('qCurrentToken').innerText = `-`;
-            document.getElementById('qYourToken').innerText = `-`;
-            qPrefix.innerText = '';
-            qEstTime.innerText = i18n[currentLang]['queue_no_appt'];
-            qEstTime.className = "text-textMuted font-bold";
-            qBar.style.width = '0%';
+            document.getElementById('qCurrentToken').innerText = `-`; document.getElementById('qYourToken').innerText = `-`; qPrefix.innerText = ''; qEstTime.innerText = i18n[currentLang]['queue_no_appt']; qEstTime.className = "text-textMuted font-bold"; qBar.style.width = '0%';
         } else {
             const diff = data.queue.yourToken - data.queue.currentToken;
-            document.getElementById('qCurrentToken').innerText = `#${data.queue.currentToken}`;
-            document.getElementById('qYourToken').innerText = `#${data.queue.yourToken}`;
-            qPrefix.innerText = i18n[currentLang]['queue_est'];
-            
-            if (diff <= 0) {
-                qEstTime.innerText = i18n[currentLang]['queue_turn'];
-                qEstTime.className = "text-brandDone font-extrabold";
-                qBar.style.width = '100%'; qBar.className = "h-full bg-brandDone progress-bar-fill rounded-full";
-            } else {
-                const estMins = diff * data.queue.avgWaitMins;
-                qEstTime.innerText = `~${estMins} ${i18n[currentLang]['queue_mins']}`;
-                qEstTime.className = "text-textMain font-extrabold";
-                let percent = (data.queue.currentToken / data.queue.yourToken) * 100;
-                if(percent > 100) percent = 100;
-                qBar.style.width = `${percent}%`; qBar.className = "h-full bg-brandWait progress-bar-fill rounded-full";
+            document.getElementById('qCurrentToken').innerText = `#${data.queue.currentToken}`; document.getElementById('qYourToken').innerText = `#${data.queue.yourToken}`; qPrefix.innerText = i18n[currentLang]['queue_est'];
+            if (diff <= 0) { qEstTime.innerText = i18n[currentLang]['queue_turn']; qEstTime.className = "text-brandDone font-extrabold"; qBar.style.width = '100%'; qBar.className = "h-full bg-brandDone progress-bar-fill rounded-full"; } 
+            else {
+                const estMins = diff * data.queue.avgWaitMins; qEstTime.innerText = `~${estMins} ${i18n[currentLang]['queue_mins']}`; qEstTime.className = "text-textMain font-extrabold";
+                let percent = (data.queue.currentToken / data.queue.yourToken) * 100; if(percent > 100) percent = 100; qBar.style.width = `${percent}%`; qBar.className = "h-full bg-brandWait progress-bar-fill rounded-full";
             }
         }
         renderMedicineTracker(); renderVault();
@@ -399,50 +276,24 @@
 
     function renderMedicineTracker() {
         const list = document.getElementById('medicineList');
-        if(!currentPatientState.activeProtocol || currentPatientState.activeProtocol.length === 0) {
-            list.innerHTML = `<p class="text-center text-xs text-textMuted py-4">${i18n[currentLang]['med_empty']}</p>`; return;
-        }
-
+        if(!currentPatientState.activeProtocol || currentPatientState.activeProtocol.length === 0) { list.innerHTML = `<p class="text-center text-xs text-textMuted py-4">${i18n[currentLang]['med_empty']}</p>`; return; }
         list.innerHTML = currentPatientState.activeProtocol.map(med => {
-            const style = getTimingEmojiAndColor(med.timing);
-            const hasWarmWater = med.timing.toLowerCase().includes('warm water') || med.timing.toLowerCase().includes('गर्म');
+            const style = getTimingEmojiAndColor(med.timing); const hasWarmWater = med.timing.toLowerCase().includes('warm water') || med.timing.toLowerCase().includes('गर्म');
             const warmBadge = hasWarmWater ? `<span class="inline-flex items-center gap-1 bg-red-50 text-red-600 text-[10px] font-bold px-1.5 py-0.5 rounded border border-red-100 ml-2">☕ ${i18n[currentLang]['med_warm']}</span>` : '';
-            return `
-                <div class="flex items-start gap-3 p-3 rounded-2xl border ${style.border} ${style.bg} transition-colors">
-                    <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm shrink-0 border ${style.border} text-xl">${style.emoji}</div>
-                    <div class="flex-1 pt-0.5">
-                        <div class="flex justify-between items-start">
-                            <h4 class="font-bold text-textMain text-sm pr-2">${med.name}</h4>
-                            <span class="text-xs font-extrabold text-textMain bg-white px-2 py-0.5 rounded shadow-sm border ${style.border} whitespace-nowrap">${med.dose}</span>
-                        </div>
-                        <p class="text-[11px] font-medium text-textMuted mt-1 leading-snug">${med.timing} ${warmBadge}</p>
-                    </div>
-                </div>
-            `;
+            return `<div class="flex items-start gap-3 p-3 rounded-2xl border ${style.border} ${style.bg} transition-colors"><div class="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm shrink-0 border ${style.border} text-xl">${style.emoji}</div><div class="flex-1 pt-0.5"><div class="flex justify-between items-start"><h4 class="font-bold text-textMain text-sm pr-2">${med.name}</h4><span class="text-xs font-extrabold text-textMain bg-white px-2 py-0.5 rounded shadow-sm border ${style.border} whitespace-nowrap">${med.dose}</span></div><p class="text-[11px] font-medium text-textMuted mt-1 leading-snug">${med.timing} ${warmBadge}</p></div></div>`;
         }).join('');
     }
 
     function switchVaultTab(tab) {
-        activeVaultTab = tab;
-        const btnRep = document.getElementById('tabReports'); const btnRx = document.getElementById('tabRx');
-        if(tab === 'reports') {
-            btnRep.className = "px-4 py-2 bg-textMain text-white rounded-full text-xs font-bold whitespace-nowrap transition-colors";
-            btnRx.className = "px-4 py-2 bg-inputBg text-textMuted rounded-full text-xs font-bold whitespace-nowrap border border-appBorder hover:text-textMain transition-colors";
-        } else {
-            btnRx.className = "px-4 py-2 bg-textMain text-white rounded-full text-xs font-bold whitespace-nowrap transition-colors";
-            btnRep.className = "px-4 py-2 bg-inputBg text-textMuted rounded-full text-xs font-bold whitespace-nowrap border border-appBorder hover:text-textMain transition-colors";
-        }
+        activeVaultTab = tab; const btnRep = document.getElementById('tabReports'); const btnRx = document.getElementById('tabRx');
+        if(tab === 'reports') { btnRep.className = "px-4 py-2 bg-textMain text-white rounded-full text-xs font-bold whitespace-nowrap transition-colors"; btnRx.className = "px-4 py-2 bg-inputBg text-textMuted rounded-full text-xs font-bold whitespace-nowrap border border-appBorder hover:text-textMain transition-colors"; } 
+        else { btnRx.className = "px-4 py-2 bg-textMain text-white rounded-full text-xs font-bold whitespace-nowrap transition-colors"; btnRep.className = "px-4 py-2 bg-inputBg text-textMuted rounded-full text-xs font-bold whitespace-nowrap border border-appBorder hover:text-textMain transition-colors"; }
         renderVault();
     }
 
     function renderVault() {
-        const content = document.getElementById('vaultContent');
-        let dataList = activeVaultTab === 'reports' ? currentPatientState.reports : currentPatientState.prescriptions;
-        
-        if(!dataList || dataList.length === 0) {
-            content.innerHTML = `<p class="text-center text-xs text-textMuted py-6 border border-dashed border-appBorder rounded-2xl">${i18n[currentLang]['vault_empty']}</p>`; return;
-        }
-
+        const content = document.getElementById('vaultContent'); let dataList = activeVaultTab === 'reports' ? currentPatientState.reports : currentPatientState.prescriptions;
+        if(!dataList || dataList.length === 0) { content.innerHTML = `<p class="text-center text-xs text-textMuted py-6 border border-dashed border-appBorder rounded-2xl">${i18n[currentLang]['vault_empty']}</p>`; return; }
         if(activeVaultTab === 'reports') {
             content.innerHTML = dataList.map(item => `
                 <div class="p-3 bg-inputBg border border-appBorder rounded-2xl flex items-center justify-between group">
@@ -455,160 +306,102 @@
                             <p class="text-[10px] font-semibold text-textMuted">${item.date}</p>
                         </div>
                     </div>
-                    <button class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-textMain hover:bg-brandWait hover:text-white transition-colors border border-appBorder shadow-sm" onclick="proxyDownloadFile('${item.fileId}', '${item.label}')">
+                    <button class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-textMain hover:bg-brandWait hover:text-white transition-colors border border-appBorder shadow-sm" onclick="downloadReportFromHistory('${item.fileUrlOrId}', '${item.label}')">
                         <i class="ph-bold ph-download-simple"></i>
                     </button>
                 </div>
             `).join('');
         } else {
-            content.innerHTML = dataList.map(item => `
-                <div class="p-3 bg-inputBg border border-appBorder rounded-2xl flex flex-col group">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-[10px] font-bold text-brandDone uppercase tracking-wider bg-brandDone/10 px-2 py-0.5 rounded">${item.date}</span>
-                    </div>
-                    <p class="text-xs font-medium text-textMain">${i18n[currentLang]['vault_complaint']} <span class="text-textMuted">${item.complaint || 'N/A'}</span></p>
-                </div>
-            `).join('');
+            content.innerHTML = dataList.map(item => `<div class="p-3 bg-inputBg border border-appBorder rounded-2xl flex flex-col group"><div class="flex justify-between items-center mb-2"><span class="text-[10px] font-bold text-brandDone uppercase tracking-wider bg-brandDone/10 px-2 py-0.5 rounded">${item.date}</span></div><p class="text-xs font-medium text-textMain">${i18n[currentLang]['vault_complaint']} <span class="text-textMuted">${item.complaint || 'N/A'}</span></p></div>`).join('');
         }
     }
 
     // ==========================================
-    // GODMODE: FILE UPLOAD & PROXY DOWNLOAD
+    // GODMODE: CLOUDINARY UPLOAD 
     // ==========================================
-    let pendingUploadPayload = null;
-
     function processAndUploadFile(e) {
-        const file = e.target.files[0];
-        if(!file) return;
-
-        document.getElementById('uploadFileName').innerText = file.name;
-        openUploadModal();
-
-        // Canvas Compression for Images
-        if(file.type.startsWith('image/')) {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = ev => {
-                const img = new Image();
-                img.src = ev.target.result;
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 1600;
-                    let width = img.width; let height = img.height;
-
-                    if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
-                    canvas.width = width; canvas.height = height;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, width, height);
-                    
-                    const dataUrl = canvas.toDataURL('image/jpeg', 0.75); // 75% compressed JPEG
-                    executeXHRUpload(file.name, 'image/jpeg', dataUrl);
-                }
-            }
-        } else {
-            // PDF or other documents (No compression)
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = ev => { executeXHRUpload(file.name, file.type, ev.target.result); };
+        if(CLOUDINARY_CLOUD_NAME === "YOUR_CLOUD_NAME") {
+            alert("Developer Note: Please configure your Cloudinary Cloud Name and Preset in the code.");
+            return;
         }
-        e.target.value = ''; 
-    }
+        
+        const file = e.target.files[0]; if(!file) return;
+        document.getElementById('uploadFileName').innerText = file.name; openUploadModal();
 
-    function executeXHRUpload(fileName, mimeType, base64Data) {
-        pendingUploadPayload = { action: 'uploadReport', patientId: currentPatientState.patientId, fileName: fileName, mimeType: mimeType, base64Data: base64Data };
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
 
         const xhr = new XMLHttpRequest();
-        xhr.open("POST", GAS_WEB_APP_URL, true);
-        
-        // Progress Listener
-        xhr.upload.onprogress = function(e) {
-            if (e.lengthComputable) {
-                let percentComplete = (e.loaded / e.total) * 100;
+        xhr.open("POST", CLOUDINARY_URL, true);
+
+        // Real-time Cloudinary upload progress!
+        xhr.upload.onprogress = function(event) {
+            if (event.lengthComputable) {
+                let percentComplete = (event.loaded / event.total) * 100;
                 document.getElementById('uploadProgressBar').style.width = percentComplete + '%';
                 document.getElementById('uploadPercentage').innerText = Math.round(percentComplete) + '%';
             }
         };
 
-        xhr.onload = function() {
+        xhr.onload = async function() {
             if (xhr.status === 200) {
-                const res = JSON.parse(xhr.responseText);
-                if(res.success) {
-                    showUploadSuccess();
-                    currentPatientState.reports.unshift({ reportId: res.data.id, fileId: res.data.fileId, label: res.data.label, date: res.data.date, type: mimeType });
-                    setTimeout(() => { switchVaultTab('reports'); showToast(currentLang === 'en' ? "Uploaded successfully!" : "अपलोड सफल!"); }, 1500);
-                } else { showUploadError(res.message); }
-            } else { showUploadError("Server error."); }
+                const response = JSON.parse(xhr.responseText);
+                const fileUrl = response.secure_url;
+                
+                document.getElementById('uploadTitle').innerText = currentLang === 'en' ? "Saving to Record..." : "रिकॉर्ड सेव हो रहा है...";
+                document.getElementById('uploadSpinner').classList.remove('hidden');
+                
+                try {
+                    const gasRes = await fetch(GAS_WEB_APP_URL, {
+                        method: 'POST',
+                        body: JSON.stringify({ action: 'uploadReport', patientId: currentPatientState.patientId, fileName: file.name, fileUrl: fileUrl })
+                    });
+                    const gasData = await gasRes.json();
+                    
+                    if(gasData.success) {
+                        showUploadSuccess();
+                        currentPatientState.reports.unshift({ reportId: gasData.data.id, fileUrlOrId: fileUrl, label: file.name, date: gasData.data.date, type: file.type.includes('pdf') ? 'pdf' : 'image' });
+                        setTimeout(() => { switchVaultTab('reports'); showToast(currentLang === 'en' ? "Uploaded successfully!" : "अपलोड सफल!"); }, 1500);
+                    } else {
+                        showUploadError(gasData.message);
+                    }
+                } catch(err) { showUploadError("Failed to save to database."); }
+            } else {
+                showUploadError("Upload rejected by Cloudinary.");
+            }
         };
-
         xhr.onerror = function() { showUploadError(currentLang === 'en' ? "Network disconnected." : "नेटवर्क समस्या।"); };
-        xhr.send(JSON.stringify(pendingUploadPayload));
+        xhr.send(formData);
+        e.target.value = ''; 
     }
 
-    function retryUpload() {
-        showUploadProgressUI();
-        if(pendingUploadPayload) {
-            executeXHRUpload(pendingUploadPayload.fileName, pendingUploadPayload.mimeType, pendingUploadPayload.base64Data);
+    async function downloadReportFromHistory(fileUrlOrId, fileName) {
+        if(!fileUrlOrId) { showToast("File not available", "error"); return; }
+        
+        // Godmode: Cloudinary Direct Open
+        if (String(fileUrlOrId).startsWith('http')) {
+            window.open(fileUrlOrId, '_blank');
+            return;
         }
-    }
 
-    // Proxy Download Logic
-    async function proxyDownloadFile(fileId, fileName) {
-        if(!fileId) { showToast("File not available", "error"); return; }
+        // Legacy Google Drive Proxy fallback
         showToast(currentLang === 'en' ? 'Fetching secure document...' : 'डॉक्यूमेंट लाया जा रहा है...');
         try {
-            const res = await fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: 'downloadReport', fileId: fileId }) });
+            const res = await fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: 'downloadReport', fileId: fileUrlOrId }) });
             const data = await res.json();
             if(data.success) {
-                // Force Native Download via anchor tag click
-                const a = document.createElement("a");
-                a.href = `data:${data.mimeType};base64,${data.base64Data}`;
-                a.download = data.fileName || fileName;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                showToast("Download started!");
-            } else { showToast(data.message, "error"); }
+                if(data.isHeavy) { window.open(data.url, '_blank'); showToast("Opening viewer..."); } 
+                else { const a = document.createElement("a"); a.href = `data:${data.mimeType};base64,${data.base64Data}`; a.download = data.fileName || fileName; document.body.appendChild(a); a.click(); document.body.removeChild(a); showToast("Download started!"); }
+            } else showToast(data.message, "error"); 
         } catch(e) { showToast("Failed to download.", "error"); }
     }
 
-    // Modal UI States
-    function openUploadModal() {
-        const modal = document.getElementById('uploadModal'); const content = document.getElementById('uploadModalContent');
-        showUploadProgressUI();
-        modal.classList.remove('hidden');
-        setTimeout(() => { content.classList.remove('scale-95', 'opacity-0'); content.classList.add('scale-100', 'opacity-100'); }, 10);
-    }
-    
-    function closeUploadModal() {
-        const modal = document.getElementById('uploadModal'); const content = document.getElementById('uploadModalContent');
-        content.classList.remove('scale-100', 'opacity-100'); content.classList.add('scale-95', 'opacity-0');
-        setTimeout(() => { modal.classList.add('hidden'); }, 300);
-    }
-
-    function showUploadProgressUI() {
-        document.getElementById('uploadStatusUI').classList.remove('hidden');
-        document.getElementById('uploadErrorUI').classList.add('hidden');
-        document.getElementById('uploadProgressBar').style.width = '0%';
-        document.getElementById('uploadPercentage').innerText = '0%';
-        document.getElementById('uploadSpinner').classList.remove('hidden');
-        document.getElementById('uploadIcon').className = "ph-fill ph-file-arrow-up text-3xl text-brandWait relative z-10";
-        document.getElementById('uploadTitle').innerText = i18n[currentLang]['up_title'];
-    }
-
-    function showUploadSuccess() {
-        document.getElementById('uploadSpinner').classList.add('hidden');
-        document.getElementById('uploadProgressBar').style.width = '100%';
-        document.getElementById('uploadPercentage').innerText = '100%';
-        document.getElementById('uploadIcon').className = "ph-fill ph-check-circle text-3xl text-brandDone relative z-10";
-        document.getElementById('uploadTitle').innerText = currentLang === 'en' ? "Upload Complete!" : "अपलोड पूरा हुआ!";
-        setTimeout(closeUploadModal, 1500);
-    }
-
-    function showUploadError(msg) {
-        document.getElementById('uploadStatusUI').classList.add('hidden');
-        document.getElementById('uploadErrorUI').classList.remove('hidden');
-        document.getElementById('uploadErrorMsg').innerText = msg;
-    }
+    function openUploadModal() { const modal = document.getElementById('uploadModal'); const content = document.getElementById('uploadModalContent'); showUploadProgressUI(); modal.classList.remove('hidden'); setTimeout(() => { content.classList.remove('scale-95', 'opacity-0'); content.classList.add('scale-100', 'opacity-100'); }, 10); }
+    function closeUploadModal() { const modal = document.getElementById('uploadModal'); const content = document.getElementById('uploadModalContent'); content.classList.remove('scale-100', 'opacity-100'); content.classList.add('scale-95', 'opacity-0'); setTimeout(() => { modal.classList.add('hidden'); }, 300); }
+    function showUploadProgressUI() { document.getElementById('uploadStatusUI').classList.remove('hidden'); document.getElementById('uploadErrorUI').classList.add('hidden'); document.getElementById('uploadProgressBar').style.width = '0%'; document.getElementById('uploadPercentage').innerText = '0%'; document.getElementById('uploadSpinner').classList.add('hidden'); document.getElementById('uploadIcon').className = "ph-fill ph-file-arrow-up text-3xl text-brandWait relative z-10"; document.getElementById('uploadTitle').innerText = i18n[currentLang]['up_title']; }
+    function showUploadSuccess() { document.getElementById('uploadSpinner').classList.add('hidden'); document.getElementById('uploadProgressBar').style.width = '100%'; document.getElementById('uploadPercentage').innerText = '100%'; document.getElementById('uploadIcon').className = "ph-fill ph-check-circle text-3xl text-brandDone relative z-10"; document.getElementById('uploadTitle').innerText = currentLang === 'en' ? "Upload Complete!" : "अपलोड पूरा हुआ!"; setTimeout(closeUploadModal, 1500); }
+    function showUploadError(msg) { document.getElementById('uploadStatusUI').classList.add('hidden'); document.getElementById('uploadErrorUI').classList.remove('hidden'); document.getElementById('uploadErrorMsg').innerText = msg; }
 
 </script>
 </body>
