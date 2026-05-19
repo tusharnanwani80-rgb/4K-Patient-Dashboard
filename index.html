@@ -294,6 +294,7 @@
         const content = document.getElementById('vaultContent'); let dataList = activeVaultTab === 'reports' ? currentPatientState.reports : currentPatientState.prescriptions;
         if(!dataList || dataList.length === 0) { content.innerHTML = `<p class="text-center text-xs text-textMuted py-6 border border-dashed border-appBorder rounded-2xl">${i18n[currentLang]['vault_empty']}</p>`; return; }
         if(activeVaultTab === 'reports') {
+            // GODMODE FIX: Yahan 'item.fileId' ko theek karke 'item.fileUrlOrId' kar diya gaya hai.
             content.innerHTML = dataList.map(item => `
                 <div class="p-3 bg-inputBg border border-appBorder rounded-2xl flex items-center justify-between group">
                     <div class="flex items-center gap-3">
@@ -305,7 +306,7 @@
                             <p class="text-[10px] font-semibold text-textMuted">${item.date}</p>
                         </div>
                     </div>
-                    <button class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-textMain hover:bg-brandWait hover:text-white transition-colors border border-appBorder shadow-sm" onclick="downloadReportFromHistory('${item.fileId}', '${item.label}')">
+                    <button class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-textMain hover:bg-brandWait hover:text-white transition-colors border border-appBorder shadow-sm" onclick="downloadReportFromHistory('${item.fileUrlOrId}', '${item.label}')">
                         <i class="ph-bold ph-download-simple"></i>
                     </button>
                 </div>
@@ -347,7 +348,6 @@
                 document.getElementById('uploadSpinner').classList.remove('hidden');
                 
                 try {
-                    // Instantly send ONLY the resulting URL to Apps Script
                     const gasRes = await fetch(GAS_WEB_APP_URL, {
                         method: 'POST',
                         body: JSON.stringify({ action: 'uploadReport', patientId: currentPatientState.patientId, fileName: file.name, fileUrl: fileUrl })
@@ -373,7 +373,7 @@
     }
 
     async function downloadReportFromHistory(fileUrlOrId, fileName) {
-        if (!fileUrlOrId) { showToast("File not available", "error"); return; }
+        if (!fileUrlOrId || fileUrlOrId === 'undefined') { showToast("File not available", "error"); return; }
         
         // Godmode: Directly open Cloudinary URL! No backend lag.
         if (String(fileUrlOrId).startsWith('http')) {
