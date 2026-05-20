@@ -136,7 +136,8 @@
                 <div><label class="text-xs font-bold text-textMuted ml-2 mb-1 block">DATE</label><input type="date" id="patBookDate" required class="w-full px-5 py-4 rounded-2xl bg-inputBg text-sm font-bold border border-appBorder" onchange="updateAvailableTimeSlots()"></div>
                 <div><label class="text-xs font-bold text-textMuted ml-2 mb-1 block">TIME</label><select id="patBookTime" required class="w-full px-5 py-4 rounded-2xl bg-inputBg text-sm font-bold border border-appBorder appearance-none"><option value="09:00 AM">09:00 AM</option><option value="09:30 AM">09:30 AM</option><option value="10:00 AM">10:00 AM</option><option value="10:30 AM">10:30 AM</option><option value="11:00 AM">11:00 AM</option><option value="04:00 PM">04:00 PM</option><option value="04:30 PM">04:30 PM</option><option value="05:00 PM">05:00 PM</option></select></div>
             </div>
-            <button type="submit" id="btnPatBook" class="w-full mt-6 py-4 bg-brandDone text-white rounded-full font-extrabold flex justify-center items-center gap-2 hover:opacity-90 transition"><i class="ph-bold ph-check-circle text-lg"></i> Confirm Booking</button>
+            <!-- GODMODE FIX 5: Cooldown Target Button -->
+            <button type="submit" id="btnPatBook" class="w-full mt-6 py-4 bg-brandDone text-white rounded-full font-extrabold flex justify-center items-center gap-2 hover:opacity-90 transition"><i class="ph-bold ph-check-circle text-lg" id="btnPatBookIcon"></i> <span id="btnPatBookText">Confirm Booking</span></button>
         </form>
     </div>
 </div>
@@ -282,6 +283,13 @@
         renderMedicineTracker(); renderVault();
     }
 
+    function getTimingEmojiAndColor(timingStr) {
+        const t = timingStr.toLowerCase();
+        if (t.includes('morning') || t.includes('breakfast') || t.includes('wake')) return { emoji: '☀️', color: 'text-amber-600', bg: 'bg-amber-50', border: 'border-amber-200' };
+        else if (t.includes('night') || t.includes('dinner') || t.includes('sleep') || t.includes('evening')) return { emoji: '🌙', color: 'text-indigo-600', bg: 'bg-indigo-50', border: 'border-indigo-200' };
+        else return { emoji: '🌤️', color: 'text-orange-600', bg: 'bg-orange-50', border: 'border-orange-200' }; 
+    }
+
     function renderMedicineTracker() {
         const list = document.getElementById('medicineList');
         if(!currentPatientState.activeProtocol || currentPatientState.activeProtocol.length === 0) { list.innerHTML = `<p class="text-center text-xs text-textMuted py-4">${i18n[currentLang]['med_empty']}</p>`; return; }
@@ -326,7 +334,7 @@
     }
 
     // ==========================================
-    // GODMODE: PATIENT BOOKING (Time Traveler & Spammer Fix)
+    // GODMODE: PATIENT BOOKING (Time Traveler & 10s Cooldown Fix)
     // ==========================================
     function updateAvailableTimeSlots() {
         const dateInput = document.getElementById('patBookDate').value;
@@ -360,8 +368,7 @@
 
             if (firstAvailableIndex !== -1) {
                 timeSelect.selectedIndex = firstAvailableIndex;
-                document.getElementById('btnPatBook').disabled = false;
-                document.getElementById('btnPatBook').classList.remove('opacity-50', 'cursor-not-allowed');
+                resetBookingButton();
             } else {
                 timeSelect.selectedIndex = -1;
                 document.getElementById('btnPatBook').disabled = true;
@@ -374,13 +381,37 @@
                 options[i].style.color = '#0f172a';
             }
             timeSelect.selectedIndex = 0;
-            document.getElementById('btnPatBook').disabled = false;
-            document.getElementById('btnPatBook').classList.remove('opacity-50', 'cursor-not-allowed');
+            resetBookingButton();
         }
     }
 
+    let cooldownTimer = null;
+    function resetBookingButton() {
+        if(cooldownTimer) clearInterval(cooldownTimer);
+        const btn = document.getElementById('btnPatBook');
+        btn.disabled = false;
+        btn.className = "w-full mt-6 py-4 bg-brandDone text-white rounded-full font-extrabold flex justify-center items-center gap-2 hover:opacity-90 transition";
+        document.getElementById('btnPatBookIcon').className = "ph-bold ph-check-circle text-lg";
+        document.getElementById('btnPatBookText').innerText = "Confirm Booking";
+    }
+
+    function startCooldown() {
+        const btn = document.getElementById('btnPatBook');
+        let timeLeft = 10;
+        btn.disabled = true;
+        btn.className = "w-full mt-6 py-4 bg-gray-400 text-white rounded-full font-extrabold flex justify-center items-center gap-2 transition cursor-not-allowed";
+        document.getElementById('btnPatBookIcon').className = "ph-bold ph-clock text-lg";
+        
+        cooldownTimer = setInterval(() => {
+            document.getElementById('btnPatBookText').innerText = `Wait ${timeLeft}s before booking`;
+            timeLeft--;
+            if (timeLeft < 0) {
+                resetBookingButton();
+            }
+        }, 1000);
+    }
+
     function openPatientBookModal() {
-        // EDGE CASE C: THE SPAMMER
         if (currentPatientState && currentPatientState.queue && currentPatientState.queue.inQueue) {
             showToast(currentLang === 'en' ? "You already have an active appointment today!" : "आपकी आज की अपॉइंटमेंट पहले से बुक है!", "error");
             return;
@@ -389,22 +420,36 @@
         const todayStrLocal = new Date().toISOString().split('T')[0];
         document.getElementById('patBookDate').min = todayStrLocal;
         document.getElementById('patBookDate').value = todayStrLocal;
-        updateAvailableTimeSlots(); // EDGE CASE A: THE TIME TRAVELER 
+        updateAvailableTimeSlots(); 
         openModal('patientBookModal');
     }
 
     async function submitPatientBooking(e) {
         e.preventDefault();
         const date = document.getElementById('patBookDate').value; const time = document.getElementById('patBookTime').value;
-        const btn = document.getElementById('btnPatBook'); const originalText = btn.innerHTML; btn.innerHTML = `<i class="ph ph-spinner-gap animate-spin"></i> Booking...`; btn.disabled = true;
+        const btn = document.getElementById('btnPatBook'); 
+        
+        btn.disabled = true;
+        document.getElementById('btnPatBookIcon').className = "ph-bold ph-spinner-gap animate-spin text-lg";
+        document.getElementById('btnPatBookText').innerText = "Booking...";
 
         try {
             const res = await fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify({action: 'bookAppointment', patientId: currentPatientState.patientId, date: date, timeSlot: time, source: 'online'}) });
             const text = await res.text(); let data;
             try { data = JSON.parse(text); } catch(err) { throw new Error("Server response invalid."); }
-            if(data.success) { showToast(currentLang === 'en' ? "Booking Confirmed! Token #" + data.data.tokenNo : "बुकिंग सफल! टोकन #" + data.data.tokenNo); closeModal('patientBookModal'); handleLogin(); } 
-            else { showToast(data.message, "error"); } // EDGE CASE B: THE SLOT SNIPER
-        } catch(err) { showToast("Connection failed.", "error"); } finally { btn.innerHTML = originalText; btn.disabled = false; }
+            if(data.success) { 
+                showToast(currentLang === 'en' ? "Booking Confirmed! Token #" + data.data.tokenNo : "बुकिंग सफल! टोकन #" + data.data.tokenNo); 
+                closeModal('patientBookModal'); 
+                handleLogin(); 
+            } 
+            else { 
+                showToast(data.message, "error"); 
+                startCooldown(); // Edge case C: Only cooldown on fail to prevent spamming server
+            } 
+        } catch(err) { 
+            showToast("Connection failed.", "error"); 
+            startCooldown();
+        } 
     }
 
     // ==========================================
@@ -472,9 +517,19 @@
         } catch(err) { showToast("Connection failed.", "error"); }
     }
 
+    // GODMODE FIX 4: Cloudinary PDF Force Download (Network Error Fix)
     async function downloadReportFromHistory(fileUrlOrId, fileName) {
         if (!fileUrlOrId || fileUrlOrId === 'undefined') { showToast("File not available", "error"); return; }
-        if (String(fileUrlOrId).startsWith('http')) { window.open(fileUrlOrId, '_blank'); return; }
+        
+        if (String(fileUrlOrId).startsWith('http')) { 
+            let url = fileUrlOrId;
+            // PDF Magic attachment flag to prevent browser block
+            if (url.includes('cloudinary.com') && url.toLowerCase().includes('.pdf')) {
+                url = url.replace('/upload/', '/upload/fl_attachment/');
+            }
+            window.open(url, '_blank'); 
+            return; 
+        }
         showToast(currentLang === 'en' ? "Old files are no longer supported. Please re-upload." : "पुरानी फाइलें अब समर्थित नहीं हैं।", "error");
     }
 
