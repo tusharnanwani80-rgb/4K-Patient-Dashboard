@@ -92,7 +92,7 @@
                 <div id="medicineList" class="space-y-3"></div>
             </div>
 
-            <!-- CALL TO ACTION (Updated to "Call the Clinic") -->
+            <!-- CALL TO ACTION -->
             <div class="bg-gradient-to-br from-[#1E293B] to-[#0F172A] rounded-[32px] p-6 shadow-xl relative overflow-hidden slide-up" style="animation-delay: 0.3s;">
                 <div class="absolute right-[-10%] top-[-20%] w-32 h-32 bg-white/5 rounded-full blur-2xl"></div>
                 <h3 class="font-extrabold text-white text-lg mb-1"><span data-i18n="call_title">Call the Clinic</span></h3>
@@ -127,13 +127,13 @@
     </div>
 </div>
 
-<!-- PATIENT BOOKING MODAL -->
+<!-- PATIENT BOOKING MODAL (Time Traveler Fix Applied) -->
 <div id="patientBookModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[180] hidden flex flex-col justify-end max-w-[480px] mx-auto">
     <div class="bg-appHeader w-full rounded-t-[40px] p-6 transform transition-transform translate-y-full border-t border-appBorder" id="patientBookModalContent">
         <div class="flex justify-between items-center mb-6"><h3 class="text-xl font-bold text-textMain"><span data-i18n="book_online">Book Appointment</span></h3><button onclick="closeModal('patientBookModal')" class="w-8 h-8 bg-inputBg border border-appBorder rounded-full flex items-center justify-center text-textMuted hover:text-textMain transition"><i class="ph-bold ph-x"></i></button></div>
         <form onsubmit="submitPatientBooking(event)" class="space-y-4">
             <div class="grid grid-cols-2 gap-4 pt-2">
-                <div><label class="text-xs font-bold text-textMuted ml-2 mb-1 block">DATE</label><input type="date" id="patBookDate" required class="w-full px-5 py-4 rounded-2xl bg-inputBg text-sm font-bold border border-appBorder"></div>
+                <div><label class="text-xs font-bold text-textMuted ml-2 mb-1 block">DATE</label><input type="date" id="patBookDate" required class="w-full px-5 py-4 rounded-2xl bg-inputBg text-sm font-bold border border-appBorder" onchange="updateAvailableTimeSlots()"></div>
                 <div><label class="text-xs font-bold text-textMuted ml-2 mb-1 block">TIME</label><select id="patBookTime" required class="w-full px-5 py-4 rounded-2xl bg-inputBg text-sm font-bold border border-appBorder appearance-none"><option value="09:00 AM">09:00 AM</option><option value="09:30 AM">09:30 AM</option><option value="10:00 AM">10:00 AM</option><option value="10:30 AM">10:30 AM</option><option value="11:00 AM">11:00 AM</option><option value="04:00 PM">04:00 PM</option><option value="04:30 PM">04:30 PM</option><option value="05:00 PM">05:00 PM</option></select></div>
             </div>
             <button type="submit" id="btnPatBook" class="w-full mt-6 py-4 bg-brandDone text-white rounded-full font-extrabold flex justify-center items-center gap-2 hover:opacity-90 transition"><i class="ph-bold ph-check-circle text-lg"></i> Confirm Booking</button>
@@ -141,7 +141,7 @@
     </div>
 </div>
 
-<!-- UPLOAD CONFIG MODAL (Rename & Date) -->
+<!-- UPLOAD CONFIG MODAL -->
 <div id="uploadConfigModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[180] hidden flex flex-col justify-end max-w-[480px] mx-auto">
     <div class="bg-appHeader w-full rounded-t-[40px] p-6 transform transition-transform translate-y-full border-t border-appBorder" id="uploadConfigModalContent">
         <div class="flex justify-between items-center mb-6"><h3 class="text-xl font-bold text-textMain"><span data-i18n="vault_upload">Upload Report</span></h3><button onclick="closeModal('uploadConfigModal')" class="w-8 h-8 bg-inputBg border border-appBorder rounded-full flex items-center justify-center text-textMuted hover:text-textMain transition"><i class="ph-bold ph-x"></i></button></div>
@@ -153,7 +153,7 @@
     </div>
 </div>
 
-<!-- Upload Progress Modal (Cloudinary Version) -->
+<!-- Upload Progress Modal -->
 <div id="uploadModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[190] hidden flex flex-col justify-center items-center px-6">
     <div class="bg-white w-full max-w-[320px] rounded-3xl p-6 text-center transform scale-95 opacity-0 transition-all duration-300" id="uploadModalContent">
         <div id="uploadStatusUI">
@@ -326,12 +326,70 @@
     }
 
     // ==========================================
-    // BOOK APPOINTMENT MODAL (Patient Portal)
+    // GODMODE: PATIENT BOOKING (Time Traveler & Spammer Fix)
     // ==========================================
+    function updateAvailableTimeSlots() {
+        const dateInput = document.getElementById('patBookDate').value;
+        const timeSelect = document.getElementById('patBookTime');
+        const options = timeSelect.options;
+        const now = new Date();
+        const todayStr = now.toISOString().split('T')[0];
+
+        if (dateInput === todayStr) {
+            const currentHours = now.getHours();
+            const currentMinutes = now.getMinutes();
+            let firstAvailableIndex = -1;
+
+            for (let i = 0; i < options.length; i++) {
+                const timeStr = options[i].value;
+                let [time, modifier] = timeStr.split(' ');
+                let [hours, minutes] = time.split(':');
+                hours = parseInt(hours, 10);
+                if (modifier === 'PM' && hours < 12) hours += 12;
+                if (modifier === 'AM' && hours === 12) hours = 0;
+
+                if (hours < currentHours || (hours === currentHours && parseInt(minutes) <= currentMinutes)) {
+                    options[i].disabled = true;
+                    options[i].style.color = '#94a3b8'; 
+                } else {
+                    options[i].disabled = false;
+                    options[i].style.color = '#0f172a';
+                    if (firstAvailableIndex === -1) firstAvailableIndex = i;
+                }
+            }
+
+            if (firstAvailableIndex !== -1) {
+                timeSelect.selectedIndex = firstAvailableIndex;
+                document.getElementById('btnPatBook').disabled = false;
+                document.getElementById('btnPatBook').classList.remove('opacity-50', 'cursor-not-allowed');
+            } else {
+                timeSelect.selectedIndex = -1;
+                document.getElementById('btnPatBook').disabled = true;
+                document.getElementById('btnPatBook').classList.add('opacity-50', 'cursor-not-allowed');
+                showToast(currentLang === 'en' ? "No more slots available today." : "आज के लिए कोई समय उपलब्ध नहीं है।", "warning");
+            }
+        } else {
+            for (let i = 0; i < options.length; i++) {
+                options[i].disabled = false;
+                options[i].style.color = '#0f172a';
+            }
+            timeSelect.selectedIndex = 0;
+            document.getElementById('btnPatBook').disabled = false;
+            document.getElementById('btnPatBook').classList.remove('opacity-50', 'cursor-not-allowed');
+        }
+    }
+
     function openPatientBookModal() {
+        // EDGE CASE C: THE SPAMMER
+        if (currentPatientState && currentPatientState.queue && currentPatientState.queue.inQueue) {
+            showToast(currentLang === 'en' ? "You already have an active appointment today!" : "आपकी आज की अपॉइंटमेंट पहले से बुक है!", "error");
+            return;
+        }
+
         const todayStrLocal = new Date().toISOString().split('T')[0];
         document.getElementById('patBookDate').min = todayStrLocal;
         document.getElementById('patBookDate').value = todayStrLocal;
+        updateAvailableTimeSlots(); // EDGE CASE A: THE TIME TRAVELER 
         openModal('patientBookModal');
     }
 
@@ -344,7 +402,8 @@
             const res = await fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify({action: 'bookAppointment', patientId: currentPatientState.patientId, date: date, timeSlot: time, source: 'online'}) });
             const text = await res.text(); let data;
             try { data = JSON.parse(text); } catch(err) { throw new Error("Server response invalid."); }
-            if(data.success) { showToast(currentLang === 'en' ? "Booking Confirmed! Token #" + data.data.tokenNo : "बुकिंग सफल! टोकन #" + data.data.tokenNo); closeModal('patientBookModal'); handleLogin(); } else { showToast(data.message, "error"); } 
+            if(data.success) { showToast(currentLang === 'en' ? "Booking Confirmed! Token #" + data.data.tokenNo : "बुकिंग सफल! टोकन #" + data.data.tokenNo); closeModal('patientBookModal'); handleLogin(); } 
+            else { showToast(data.message, "error"); } // EDGE CASE B: THE SLOT SNIPER
         } catch(err) { showToast("Connection failed.", "error"); } finally { btn.innerHTML = originalText; btn.disabled = false; }
     }
 
