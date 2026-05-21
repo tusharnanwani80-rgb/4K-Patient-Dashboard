@@ -532,43 +532,67 @@
             showUploadSuccess(); currentPatientState.reports.unshift({ reportId: gasData.data.id, fileUrlOrId: fileUrl, label: customName, date: gasData.data.date, type: file.type.includes('pdf') ? 'pdf' : 'image' });
             setTimeout(() => { switchVaultTab('reports'); showToast(currentLang === 'en' ? "Uploaded successfully!" : "अपलोड सफल!"); }, 1500);
         } else showUploadError(gasData.message);
-    }
-
     async function executeUploadThingPdfUpload(file, customName, customDate) {
-        document.getElementById('uploadFileName').innerText = customName; openUploadModal();
-        document.getElementById('uploadTitle').innerText = currentLang === 'en' ? "Preparing PDF Upload..." : "PDF अपलोड तैयार हो रहा है...";
-        document.getElementById('uploadProgressBar').style.width = '5%'; document.getElementById('uploadPercentage').innerText = '5%';
-        try {
-            const prepRes = await fetch(GAS_WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: 'createUploadThingPdfUpload', fileName: customName, fileSize: file.size, fileType: file.type }) });
-            const prep = await prepRes.json();
-            if(!prep.success) { showUploadError(prep.message); return; }
+    document.getElementById('uploadFileName').innerText = customName; 
+    openUploadModal();
+    document.getElementById('uploadTitle').innerText = currentLang === 'en' ? "Preparing PDF Upload..." : "PDF अपलोड तैयार हो रहा है...";
+    document.getElementById('uploadProgressBar').style.width = '5%'; 
+    document.getElementById('uploadPercentage').innerText = '5%';
+    
+    try {
+        const prepRes = await fetch(GAS_WEB_APP_URL, { 
+            method: 'POST', 
+            body: JSON.stringify({ 
+                action: 'createUploadThingPdfUpload', 
+                fileName: customName, 
+                fileSize: file.size, 
+                fileType: file.type 
+            }) 
+        });
+        const prep = await prepRes.json();
+        if(!prep.success) { showUploadError(prep.message); return; }
 
-            document.getElementById('uploadTitle').innerText = currentLang === 'en' ? "Uploading PDF..." : "PDF अपलोड हो रहा है...";
-            const formData = new FormData(); formData.append("file", file);
-            const xhr = new XMLHttpRequest(); xhr.open("PUT", prep.data.uploadUrl, true);
-            xhr.upload.onprogress = function(event) {
-                if (event.lengthComputable) {
-                    let percentComplete = 10 + ((event.loaded / event.total) * 80);
-                    document.getElementById('uploadProgressBar').style.width = percentComplete + '%';
-                    document.getElementById('uploadPercentage').innerText = Math.round(percentComplete) + '%';
+        document.getElementById('uploadTitle').innerText = currentLang === 'en' ? "Uploading PDF..." : "PDF अपलोड हो रहा है...";
+        
+        // --- THE FIX IS HERE ---
+        const xhr = new XMLHttpRequest(); 
+        xhr.open("PUT", prep.data.uploadUrl, true);
+        
+        // CRITICAL: Tell the server exactly what file type is coming
+        xhr.setRequestHeader("Content-Type", file.type);
+
+        xhr.upload.onprogress = function(event) {
+            if (event.lengthComputable) {
+                let percentComplete = 10 + ((event.loaded / event.total) * 80);
+                document.getElementById('uploadProgressBar').style.width = percentComplete + '%';
+                document.getElementById('uploadPercentage').innerText = Math.round(percentComplete) + '%';
+            }
+        };
+        
+        xhr.onload = async function() {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                document.getElementById('uploadTitle').innerText = currentLang === 'en' ? "Saving to Record..." : "रिकॉर्ड सेव हो रहा है...";
+                document.getElementById('uploadProgressBar').style.width = '95%'; 
+                document.getElementById('uploadPercentage').innerText = '95%';
+                try { 
+                    await saveUploadedReportRecord(prep.data.fileUrl, customName, customDate, file); 
                 }
-            };
-            xhr.onload = async function() {
-                if (xhr.status >= 200 && xhr.status < 300) {
-                    document.getElementById('uploadTitle').innerText = currentLang === 'en' ? "Saving to Record..." : "रिकॉर्ड सेव हो रहा है...";
-                    document.getElementById('uploadProgressBar').style.width = '95%'; document.getElementById('uploadPercentage').innerText = '95%';
-                    try { await saveUploadedReportRecord(prep.data.fileUrl, customName, customDate, file); }
-                    catch(err) { showUploadError("PDF uploaded, but failed to save to patient record."); }
-                } else {
-                    showUploadError("UploadThing rejected the PDF upload.");
-                }
-            };
-            xhr.onerror = function() { showUploadError(currentLang === 'en' ? "Network disconnected." : "नेटवर्क समस्या।"); };
-            xhr.send(formData);
-        } catch(err) {
-            showUploadError("Failed to prepare PDF upload.");
-        }
+                catch(err) { showUploadError("PDF uploaded, but failed to save to patient record."); }
+            } else {
+                showUploadError("UploadThing rejected the PDF upload.");
+            }
+        };
+        
+        xhr.onerror = function() { showUploadError(currentLang === 'en' ? "Network disconnected." : "नेटवर्क समस्या।"); };
+        
+        // CRITICAL: Send the raw file directly, NOT formData
+        xhr.send(file);
+        // -----------------------
+
+    } catch(err) {
+        showUploadError("Failed to prepare PDF upload.");
     }
+}
 
     function executeCloudinaryUpload(file, customName, customDate) {
         document.getElementById('uploadFileName').innerText = customName; openUploadModal();
